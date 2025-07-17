@@ -93,3 +93,32 @@ coverage/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Firebase configuration files (보안 민감)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+macos/Runner/GoogleService-Info.plist
+web/firebase-config.js
+
+# Firebase local files
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Cursor IDE
+.cursor/
+
+# IDE and editor files
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
