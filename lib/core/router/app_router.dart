@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../presentation/presentation.dart';
 
 part 'app_router.g.dart';
 
@@ -10,6 +11,7 @@ class AppRoutes {
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String phoneAuth = '/phone-auth';
+  static const String otpVerification = '/otp-verification';
   static const String profileSetup = '/profile-setup';
   
   // 메인 앱 화면들
@@ -54,6 +56,13 @@ GoRouter appRouter(AppRouterRef ref) {
         path: AppRoutes.phoneAuth,
         name: 'phoneAuth',
         builder: (context, state) => const PhoneAuthPage(),
+      ),
+      
+      // OTP 인증번호 확인 화면
+      GoRoute(
+        path: '/otp-verification',
+        name: 'otpVerification',
+        builder: (context, state) => const OtpVerificationPage(),
       ),
       
       // 프로필 설정 화면
@@ -144,22 +153,10 @@ GoRouter appRouter(AppRouterRef ref) {
 }
 
 // 임시 페이지 클래스들 (실제 구현 시 features 폴더로 이동)
-class OnboardingPage extends StatelessWidget {
-  const OnboardingPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('온보딩')));
-}
-
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
   @override
   Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('로그인')));
-}
-
-class PhoneAuthPage extends StatelessWidget {
-  const PhoneAuthPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('휴대폰 인증')));
 }
 
 class ProfileSetupPage extends StatelessWidget {
