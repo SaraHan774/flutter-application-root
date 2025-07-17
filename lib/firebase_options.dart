@@ -44,8 +44,8 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
-    appId: String.fromEnvironment('FIREBASE_APP_ID'),
+    apiKey: String.fromEnvironment('FIREBASE_API_KEY_ANDROID'), // Android API Key를 웹에서도 사용
+    appId: String.fromEnvironment('FIREBASE_APP_ID_ANDROID'), // Android App ID를 웹에서도 사용
     messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
     projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
     authDomain: String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
@@ -53,16 +53,16 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
-    appId: String.fromEnvironment('FIREBASE_APP_ID'),
+    apiKey: String.fromEnvironment('FIREBASE_API_KEY_ANDROID'),
+    appId: String.fromEnvironment('FIREBASE_APP_ID_ANDROID'),
     messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
     projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
     storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
-    appId: String.fromEnvironment('FIREBASE_APP_ID'),
+    apiKey: String.fromEnvironment('FIREBASE_API_KEY_IOS'),
+    appId: String.fromEnvironment('FIREBASE_APP_ID_IOS'),
     messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
     projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
     storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
@@ -71,8 +71,8 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_API_KEY'),
-    appId: String.fromEnvironment('FIREBASE_APP_ID'),
+    apiKey: String.fromEnvironment('FIREBASE_API_KEY_IOS'),
+    appId: String.fromEnvironment('FIREBASE_APP_ID_IOS'),
     messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
     projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
     storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),

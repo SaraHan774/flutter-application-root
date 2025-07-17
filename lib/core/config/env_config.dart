@@ -13,7 +13,7 @@ class EnvConfig {
       dotenv.env['FIREBASE_PROJECT_ID'] ?? _defaultProjectId;
   
   static String get firebaseApiKey => 
-      dotenv.env['FIREBASE_API_KEY'] ?? '';
+      dotenv.env['FIREBASE_API_KEY_ANDROID'] ?? '';
   
   static String get firebaseAuthDomain => 
       dotenv.env['FIREBASE_AUTH_DOMAIN'] ?? _defaultAuthDomain;
@@ -28,7 +28,7 @@ class EnvConfig {
       dotenv.env['FIREBASE_MESSAGING_SENDER_ID'] ?? _defaultMessagingSenderId;
   
   static String get firebaseAppId => 
-      dotenv.env['FIREBASE_APP_ID'] ?? _defaultAppId;
+      dotenv.env['FIREBASE_APP_ID_ANDROID'] ?? _defaultAppId;
 
   // App Configuration
   static String get appName => 

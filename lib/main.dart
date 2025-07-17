@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'core/config/env_config.dart';
 import 'core/core.dart';
 import 'shared/shared.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Firebase 초기화
+  // 환경 변수 로드
+  await dotenv.load(fileName: ".env");
+  
+  // Firebase 초기화 (EnvConfig 사용)
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: FirebaseOptions(
+      apiKey: EnvConfig.firebaseApiKey,
+      appId: EnvConfig.firebaseAppId,
+      messagingSenderId: EnvConfig.firebaseMessagingSenderId,
+      projectId: EnvConfig.firebaseProjectId,
+      authDomain: EnvConfig.firebaseAuthDomain,
+      storageBucket: EnvConfig.firebaseStorageBucket,
+    ),
   );
   
   runApp(

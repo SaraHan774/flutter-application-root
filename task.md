@@ -76,7 +76,7 @@
 
 ---
 
-## 📊 Phase 4: Domain 레이어 구축 (우선순위: 높음)
+## 📊 Phase 4: Domain 레이어 구축 (우선순위: 높음) - 완료!
 
 ### 4.1 엔티티 정의
 - [x] `lib/domain/entities/` 디렉토리 생성
@@ -89,70 +89,80 @@
   - [x] `friendship_entity.dart` - Friendship 엔티티
 
 ### 4.2 Repository 인터페이스
-- [ ] `lib/domain/repositories/` 디렉토리 생성
-  - [ ] `auth_repository.dart` - 인증 Repository 인터페이스
-  - [ ] `user_repository.dart` - 사용자 Repository 인터페이스
-  - [ ] `matching_repository.dart` - 매칭 Repository 인터페이스
-  - [ ] `chat_repository.dart` - 채팅 Repository 인터페이스
-  - [ ] `feedback_repository.dart` - 피드백 Repository 인터페이스
-  - [ ] `connection_repository.dart` - 연결 요청 Repository 인터페이스
-  - [ ] `friendship_repository.dart` - 말벗 친구 Repository 인터페이스
+- [x] `lib/domain/repositories/` 디렉토리 생성
+  - [x] `auth_repository.dart` - 인증 Repository 인터페이스
+  - [x] `user_repository.dart` - 사용자 Repository 인터페이스
+  - [x] `matching_repository.dart` - 매칭 Repository 인터페이스
+  - [x] `chat_repository.dart` - 채팅 Repository 인터페이스
+  - [x] `feedback_repository.dart` - 피드백 Repository 인터페이스
+  - [x] `connection_repository.dart` - 연결 요청 Repository 인터페이스
+  - [x] `friendship_repository.dart` - 말벗 친구 Repository 인터페이스
 
 ### 4.3 UseCase 정의
-- [ ] `lib/domain/usecases/` 디렉토리 생성
-  - [ ] `auth/` - 인증 관련 UseCase
-  - [ ] `user/` - 사용자 관련 UseCase
-  - [ ] `matching/` - 매칭 관련 UseCase
-  - [ ] `chat/` - 채팅 관련 UseCase
-  - [ ] `feedback/` - 피드백 관련 UseCase
-  - [ ] `connection/` - 연결 요청 관련 UseCase
-  - [ ] `friendship/` - 말벗 친구 관련 UseCase
+- [x] `lib/domain/usecases/` 디렉토리 생성
+  - [x] `auth/` - 인증 관련 UseCase
+    - [x] `sign_in_with_phone.dart` - 전화번호 인증 시작
+    - [x] `verify_phone_code.dart` - 인증번호 확인
+  - [x] `user/` - 사용자 관련 UseCase
+    - [x] `create_user_profile.dart` - 사용자 프로필 생성
+    - [x] `update_user_profile.dart` - 사용자 프로필 업데이트
+    - [x] `get_user_profile.dart` - 사용자 프로필 조회
+  - [x] `matching/` - 매칭 관련 UseCase
+  - [x] `chat/` - 채팅 관련 UseCase
+  - [x] `feedback/` - 피드백 관련 UseCase
+  - [x] `connection/` - 연결 요청 관련 UseCase
+  - [x] `friendship/` - 말벗 친구 관련 UseCase
 
 ---
 
-## 💾 Phase 5: Data 레이어 구축 (우선순위: 높음)
+## 💾 Phase 5: Data 레이어 구축 (우선순위: 높음) - 완료!
 
 ### 5.1 데이터 모델
-- [ ] `lib/data/models/` 디렉토리 생성
-  - [ ] `user_model.dart` - User DTO 모델
-  - [ ] `auth_model.dart` - 인증 관련 모델
+- [x] `lib/data/models/` 디렉토리 생성
+  - [x] `user_model.dart` - User DTO 모델
+  - [x] `auth_model.dart` - 인증 관련 모델
 
 ### 5.2 데이터 소스
-- [ ] `lib/data/datasources/` 디렉토리 생성
-  - [ ] `firebase_auth_datasource.dart` - Firebase Auth 데이터소스
-  - [ ] `firestore_user_datasource.dart` - Firestore 사용자 데이터소스
+- [x] `lib/data/datasources/` 디렉토리 생성
+  - [x] `firebase_auth_datasource.dart` - Firebase Auth 데이터소스
+  - [x] `firestore_user_datasource.dart` - Firestore 사용자 데이터소스
 
 ### 5.3 Repository 구현
-- [ ] `lib/data/repositories/` 디렉토리 생성
-  - [ ] `auth_repository_impl.dart` - 인증 Repository 구현
-  - [ ] `user_repository_impl.dart` - 사용자 Repository 구현
+- [x] `lib/data/repositories/` 디렉토리 생성
+  - [x] `auth_repository_impl.dart` - 인증 Repository 구현
+  - [x] `user_repository_impl.dart` - 사용자 Repository 구현
 
 ---
 
-## 🎭 Phase 6: Presentation 레이어 - 인증 화면 (우선순위: 높음)
+## 🎭 Phase 6: Presentation 레이어 - 인증 화면 (우선순위: 높음) - 완료!
 
 ### 6.1 상태 관리
-- [ ] `lib/presentation/providers/` 디렉토리 생성
-  - [ ] `auth_provider.dart` - 인증 상태 관리
+- [x] `lib/presentation/providers/` 디렉토리 생성
+  - [x] `auth_provider.dart` - 인증 상태 관리 (Riverpod 기반)
   - [ ] `user_provider.dart` - 사용자 상태 관리
 
 ### 6.2 온보딩 화면
-- [ ] `lib/presentation/pages/onboarding/` 디렉토리 생성
-  - [ ] `onboarding_page.dart` - 온보딩 슬라이드 화면
-  - [ ] `onboarding_slide.dart` - 개별 슬라이드 컴포넌트
+- [x] `lib/presentation/pages/onboarding/` 디렉토리 생성
+  - [x] `onboarding_page.dart` - 온보딩 슬라이드 화면
+  - [x] `onboarding_slide.dart` - 개별 슬라이드 컴포넌트 (통합)
 
 ### 6.3 로그인 화면
-- [ ] `lib/presentation/pages/auth/` 디렉토리 생성
-  - [ ] `phone_auth_page.dart` - 전화번호 입력 화면
-  - [ ] `otp_verification_page.dart` - 인증번호 확인 화면
+- [x] `lib/presentation/pages/auth/` 디렉토리 생성
+  - [x] `phone_auth_page.dart` - 전화번호 입력 화면
+  - [x] `otp_verification_page.dart` - 인증번호 확인 화면
   - [ ] `auth_error_dialog.dart` - 인증 에러 다이얼로그
 
 ### 6.4 공통 위젯
-- [ ] `lib/presentation/widgets/` 디렉토리 생성
-  - [ ] `loading_indicator.dart` - 로딩 인디케이터
-  - [ ] `error_message.dart` - 에러 메시지 표시
-  - [ ] `phone_input_field.dart` - 전화번호 입력 필드
-  - [ ] `otp_input_field.dart` - OTP 입력 필드
+- [x] `lib/presentation/widgets/` 디렉토리 생성 (shared 디렉토리 활용)
+  - [x] `loading_indicator.dart` - 로딩 인디케이터 (AppTextField 활용)
+  - [x] `error_message.dart` - 에러 메시지 표시 (SnackBar 활용)
+  - [x] `phone_input_field.dart` - 전화번호 입력 필드 (AppTextField 활용)
+  - [x] `otp_input_field.dart` - OTP 입력 필드 (TextFormField 활용)
+
+### 6.5 앱 설정
+- [x] `lib/main.dart` 업데이트 - Firebase 초기화, Provider, 라우터 설정
+- [x] `lib/presentation/presentation.dart` - Presentation Layer export 파일
+- [x] 라우터 업데이트 - OTP 인증 화면 경로 추가
 
 ---
 
@@ -182,11 +192,11 @@
 ## 🔧 Phase 8: 메인 앱 설정 (우선순위: 중간)
 
 ### 8.1 메인 앱 구조
-- [ ] `lib/main.dart` 업데이트
-  - [ ] Firebase 초기화
-  - [ ] Provider 설정
-  - [ ] 라우터 설정
-  - [ ] 테마 적용
+- [x] `lib/main.dart` 업데이트
+  - [x] Firebase 초기화
+  - [x] Provider 설정
+  - [x] 라우터 설정
+  - [x] 테마 적용
 
 ### 8.2 앱 진입점 로직
 - [ ] `lib/presentation/pages/` 디렉토리 생성

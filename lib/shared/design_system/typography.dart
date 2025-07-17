@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 /// 한담 앱의 타이포그래피 시스템
-/// Pretendard 폰트를 기반으로 한 TextTheme 정의
+/// Noto Sans KR 폰트를 기반으로 한 TextTheme 정의
 class HandamTypography {
   // Private constructor to prevent instantization
   HandamTypography._();
 
-  /// 기본 폰트 패밀리 (Pretendard)
-  static const String fontFamily = 'Pretendard';
+  /// 기본 폰트 패밀리 (Noto Sans KR)
+  static const String fontFamily = 'Noto Sans KR';
 
   /// 폰트 폴백 설정
   static const List<String> fontFallbacks = [
@@ -19,7 +19,7 @@ class HandamTypography {
 
   /// Headline1 스타일
   /// 메인 타이틀, 첫 화면 중심 메시지용
-  static TextStyle get headline1 => GoogleFonts.getFont('Pretendard',
+  static TextStyle get headline1 => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 24,
         fontWeight: FontWeight.w700,
         height: 1.33, // 32 / 24
@@ -28,7 +28,7 @@ class HandamTypography {
 
   /// Headline2 스타일
   /// 서브 타이틀, 피드백 질문용
-  static TextStyle get headline2 => GoogleFonts.getFont('Pretendard',
+  static TextStyle get headline2 => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 20,
         fontWeight: FontWeight.w600,
         height: 1.4, // 28 / 20
@@ -37,7 +37,7 @@ class HandamTypography {
 
   /// Headline3 스타일
   /// 감정 라벨, 작은 섹션 헤더용
-  static TextStyle get headline3 => GoogleFonts.getFont('Pretendard',
+  static TextStyle get headline3 => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 18,
         fontWeight: FontWeight.w600,
         height: 1.44, // 26 / 18
@@ -46,7 +46,7 @@ class HandamTypography {
 
   /// Headline4 스타일
   /// 카드 타이틀, 모듈 내 소제목용
-  static TextStyle get headline4 => GoogleFonts.getFont('Pretendard',
+  static TextStyle get headline4 => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 16,
         fontWeight: FontWeight.w500,
         height: 1.5, // 24 / 16
@@ -55,7 +55,7 @@ class HandamTypography {
 
   /// Body1 스타일
   /// 일반 본문, 채팅 메시지용
-  static TextStyle get body1 => GoogleFonts.getFont('Pretendard',
+  static TextStyle get body1 => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 16,
         fontWeight: FontWeight.w400,
         height: 1.5, // 24 / 16
@@ -63,7 +63,7 @@ class HandamTypography {
 
   /// Body2 스타일
   /// 부가 설명, 안내문용
-  static TextStyle get body2 => GoogleFonts.getFont('Pretendard',
+  static TextStyle get body2 => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 14,
         fontWeight: FontWeight.w400,
         height: 1.43, // 20 / 14
@@ -71,7 +71,7 @@ class HandamTypography {
 
   /// Body3 스타일
   /// 힌트 텍스트, 감정 카드 설명용
-  static TextStyle get body3 => GoogleFonts.getFont('Pretendard',
+  static TextStyle get body3 => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 13,
         fontWeight: FontWeight.w400,
         height: 1.38, // 18 / 13
@@ -79,7 +79,7 @@ class HandamTypography {
 
   /// Button 스타일
   /// 버튼 내부 텍스트용
-  static TextStyle get button => GoogleFonts.getFont('Pretendard',
+  static TextStyle get button => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 15,
         fontWeight: FontWeight.w600,
         height: 1.33, // 20 / 15
@@ -88,7 +88,7 @@ class HandamTypography {
 
   /// Caption 스타일
   /// 날짜, 타임스탬프, 보조 라벨용
-  static TextStyle get caption => GoogleFonts.getFont('Pretendard',
+  static TextStyle get caption => GoogleFonts.getFont('Noto Sans KR',
         fontSize: 12,
         fontWeight: FontWeight.w400,
         height: 1.33, // 16 / 12
