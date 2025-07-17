@@ -44,6 +44,10 @@ jobs:
       # Flutter 웹 빌드
       - run: flutter build web
       
+      # 웹 빌드 후 .env 파일을 build/web에 복사
+      - name: Copy .env to web build directory
+        run: cp .env build/web/.env
+      
       # Firebase Hosting 배포
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
