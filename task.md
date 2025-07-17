@@ -50,79 +50,63 @@
 
 ---
 
-## 🏗️ Phase 3: Core 레이어 구축 (우선순위: 높음) - 진행 중
-
----
-
-## 🎨 Phase 2: 디자인 시스템 구축 (우선순위: 높음)
-
-### 2.1 색상 시스템
-- [x] `lib/shared/design_system/colors.dart` 생성
-  - [x] Light Theme ColorScheme 정의
-  - [x] Dark Theme ColorScheme 정의
-  - [x] 한담 브랜드 컬러 토큰화
-
-### 2.2 타이포그래피 시스템
-- [x] `lib/shared/design_system/typography.dart` 생성
-  - [x] Pretendard 폰트 설정
-  - [x] TextTheme 정의 (Headline1~4, Body1~3, Button, Caption)
-  - [x] 폰트 크기 및 높이 비율 설정
-
-### 2.3 컴포넌트 시스템
-- [x] `lib/shared/design_system/components/` 디렉토리 생성
-  - [x] `primary_button.dart` - Primary Button 컴포넌트
-  - [x] `secondary_button.dart` - Secondary Button 컴포넌트
-  - [x] `text_field.dart` - TextField 컴포넌트
-  - [x] `emotion_chip.dart` - 감정 키워드 Chip 컴포넌트
-
-### 2.4 테마 설정
-- [x] `lib/shared/design_system/app_theme.dart` 생성
-  - [x] Material 3 기반 테마 설정
-  - [x] Light/Dark 테마 전환 로직
-  - [x] 커스텀 컴포넌트 테마 적용
-
----
-
-## 🏗️ Phase 3: Core 레이어 구축 (우선순위: 높음)
+## 🏗️ Phase 3: Core 레이어 구축 (우선순위: 높음) - 완료!
 
 ### 3.1 에러 처리
-- [ ] `lib/core/failures/` 디렉토리 생성
-  - [ ] `auth_failure.dart` - 인증 관련 에러 정의
-  - [ ] `network_failure.dart` - 네트워크 에러 정의
-  - [ ] `server_failure.dart` - 서버 에러 정의
+- [x] `lib/core/error/` 디렉토리 생성
+  - [x] `failure.dart` - Failure 계층(통합)
+  - [x] `error_handler.dart` - Firebase Exception 핸들러
 
 ### 3.2 라우팅 설정
-- [ ] `lib/core/router/` 디렉토리 생성
-  - [ ] `app_router.dart` - GoRouter 설정
-  - [ ] 라우트 정의 (온보딩, 로그인, 프로필설정, 홈)
+- [x] `lib/core/router/` 디렉토리 생성
+  - [x] `app_router.dart` - GoRouter 설정 및 라우트 정의
 
 ### 3.3 의존성 주입
-- [ ] `lib/core/di/` 디렉토리 생성
-  - [ ] `service_locator.dart` - GetIt 설정
-  - [ ] Firebase 서비스 등록
-  - [ ] Repository 등록
+- [x] `lib/core/di/` 디렉토리 생성
+  - [x] `service_locator.dart` - Riverpod 기반 DI
+  - [x] Firebase 서비스 Provider 등록
+  - [x] 인증 상태 Provider 등록
+
+### 3.4 유틸리티
+- [x] `lib/core/utils/` 디렉토리 생성
+  - [x] `constants.dart` - 상수 정의
+  - [x] `validators.dart` - 입력값 검증
+  - [x] `logger.dart` - 로깅 시스템
+- [x] `lib/core/core.dart` - core export 파일
 
 ---
 
 ## 📊 Phase 4: Domain 레이어 구축 (우선순위: 높음)
 
 ### 4.1 엔티티 정의
-- [ ] `lib/domain/entities/` 디렉토리 생성
-  - [ ] `user.dart` - User 엔티티
-  - [ ] `auth_result.dart` - 인증 결과 엔티티
-  - [ ] `emotion_tag.dart` - 감정 태그 엔티티
+- [x] `lib/domain/entities/` 디렉토리 생성
+  - [x] `user_entity.dart` - User 엔티티
+  - [x] `matching_entity.dart` - Matching 엔티티
+  - [x] `chat_room_entity.dart` - ChatRoom 엔티티
+  - [x] `message_entity.dart` - Message 엔티티
+  - [x] `feedback_entity.dart` - Feedback 엔티티
+  - [x] `connection_request_entity.dart` - ConnectionRequest 엔티티
+  - [x] `friendship_entity.dart` - Friendship 엔티티
 
 ### 4.2 Repository 인터페이스
 - [ ] `lib/domain/repositories/` 디렉토리 생성
   - [ ] `auth_repository.dart` - 인증 Repository 인터페이스
   - [ ] `user_repository.dart` - 사용자 Repository 인터페이스
+  - [ ] `matching_repository.dart` - 매칭 Repository 인터페이스
+  - [ ] `chat_repository.dart` - 채팅 Repository 인터페이스
+  - [ ] `feedback_repository.dart` - 피드백 Repository 인터페이스
+  - [ ] `connection_repository.dart` - 연결 요청 Repository 인터페이스
+  - [ ] `friendship_repository.dart` - 말벗 친구 Repository 인터페이스
 
 ### 4.3 UseCase 정의
 - [ ] `lib/domain/usecases/` 디렉토리 생성
-  - [ ] `sign_in_with_phone.dart` - 전화번호 로그인 UseCase
-  - [ ] `verify_phone_code.dart` - 인증번호 확인 UseCase
-  - [ ] `create_user_profile.dart` - 프로필 생성 UseCase
-  - [ ] `update_user_profile.dart` - 프로필 업데이트 UseCase
+  - [ ] `auth/` - 인증 관련 UseCase
+  - [ ] `user/` - 사용자 관련 UseCase
+  - [ ] `matching/` - 매칭 관련 UseCase
+  - [ ] `chat/` - 채팅 관련 UseCase
+  - [ ] `feedback/` - 피드백 관련 UseCase
+  - [ ] `connection/` - 연결 요청 관련 UseCase
+  - [ ] `friendship/` - 말벗 친구 관련 UseCase
 
 ---
 
