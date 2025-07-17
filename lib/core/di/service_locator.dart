@@ -33,8 +33,7 @@ Stream<User?> currentUser(CurrentUserRef ref) {
 /// 사용자 인증 상태 제공 (bool)
 @riverpod
 Stream<bool> isAuthenticated(IsAuthenticatedRef ref) {
-  final userStream = ref.watch(currentUserProvider);
-  return userStream.map((user) => user != null);
+  return ref.watch(currentUserProvider.stream).map((user) => user != null);
 }
 
 /// 사용자 UID 제공

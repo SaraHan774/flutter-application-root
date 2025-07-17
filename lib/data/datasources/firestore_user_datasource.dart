@@ -102,7 +102,7 @@ class FirestoreUserDataSource {
           .doc(user.uid)
           .update(userData);
 
-      AppLogger.database('updateUserProfile success', collection: FirebaseConstants.usersCollection, documentId: user.uid);
+      AppLogger.database('updateUserProfile success', FirebaseConstants.usersCollection, documentId: user.uid);
     } on FirebaseException catch (e) {
       AppLogger.database('updateUserProfile failed', FirebaseConstants.usersCollection, documentId: user.uid, error: e);
       throw ErrorHandler.handleFirestoreError(e);

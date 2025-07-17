@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../colors.dart';
-import '../../typography.dart';
+import '../colors.dart';
+import '../typography.dart';
 
 /// 한담 감정 키워드 Chip 컴포넌트
 /// 감정 태그 선택에 사용

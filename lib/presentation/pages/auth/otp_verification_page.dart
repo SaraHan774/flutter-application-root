@@ -82,7 +82,7 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString()),
-            backgroundColor: AppColors.error,
+            backgroundColor: HandamColors.errorLight,
           ),
         );
       }
@@ -112,7 +112,7 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
                 // 제목
                 Text(
                   '인증번호를\n입력해주세요',
-                  style: AppTextStyles.headline1,
+                  style: HandamTypography.headline1,
                 ),
                 
                 const SizedBox(height: 16),
@@ -120,8 +120,8 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
                 // 설명
                 Text(
                   '$_phoneNumber로 전송된\n6자리 인증번호를 입력해주세요',
-                  style: AppTextStyles.body1.copyWith(
-                    color: AppColors.textSecondary,
+                  style: HandamTypography.body1.copyWith(
+                    color: HandamColors.textSecondaryLight,
                   ),
                 ),
                 
@@ -174,8 +174,8 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
                     },
                     child: Text(
                       '인증번호 재전송',
-                      style: AppTextStyles.body2.copyWith(
-                        color: AppColors.primary,
+                      style: HandamTypography.body2.copyWith(
+                        color: HandamColors.primaryLight,
                       ),
                     ),
                   ),
@@ -187,15 +187,15 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
                 SizedBox(
                   width: double.infinity,
                   child: authState.when(
-                    loading: () => const PrimaryButton(
+                    loading: () => const HandamPrimaryButton(
                       onPressed: null,
                       text: '확인 중...',
                     ),
-                    error: (error, stack) => PrimaryButton(
+                    error: (error, stack) => HandamPrimaryButton(
                       onPressed: _verifyOtp,
                       text: '확인',
                     ),
-                    data: (user) => PrimaryButton(
+                    data: (user) => HandamPrimaryButton(
                       onPressed: _verifyOtp,
                       text: '확인',
                     ),

@@ -20,19 +20,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
       title: '하루 한 사람과\n진심 어린 대화를',
       subtitle: '매일 새로운 상대와 24시간 동안\n따뜻한 대화를 나누세요',
       image: 'assets/images/onboarding_1.png', // TODO: 이미지 추가
-      backgroundColor: AppColors.primary,
+      backgroundColor: HandamColors.primaryLight,
     ),
     OnboardingSlide(
       title: '감정 기반으로\n연결되는 공간',
       subtitle: '나의 감정을 표현하고\n비슷한 마음을 가진 사람과 만나요',
       image: 'assets/images/onboarding_2.png', // TODO: 이미지 추가
-      backgroundColor: AppColors.secondary,
+      backgroundColor: HandamColors.secondaryLight,
     ),
     OnboardingSlide(
       title: '안전하고\n익명의 대화',
       subtitle: '실명 없이 닉네임으로\n부담 없이 대화하세요',
       image: 'assets/images/onboarding_3.png', // TODO: 이미지 추가
-      backgroundColor: AppColors.accent,
+      backgroundColor: HandamColors.accentLight,
     ),
   ];
 
@@ -79,8 +79,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   onPressed: _onSkipPressed,
                   child: Text(
                     '건너뛰기',
-                    style: AppTextStyles.body2.copyWith(
-                      color: AppColors.textSecondary,
+                    style: HandamTypography.body2.copyWith(
+                      color: HandamColors.textSecondaryLight,
                     ),
                   ),
                 ),
@@ -115,8 +115,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                         height: 8,
                         decoration: BoxDecoration(
                           color: _currentPage == index 
-                              ? AppColors.primary 
-                              : AppColors.outline,
+                              ? HandamColors.primaryLight 
+                              : HandamColors.outlineLight,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -128,7 +128,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   // 다음/시작하기 버튼
                   SizedBox(
                     width: double.infinity,
-                    child: PrimaryButton(
+                    child: HandamPrimaryButton(
                       onPressed: _onNextPressed,
                       text: _currentPage == _slides.length - 1 
                           ? '시작하기' 
@@ -189,7 +189,7 @@ class OnboardingSlide extends StatelessWidget {
             // 제목
             Text(
               title,
-              style: AppTextStyles.headline1.copyWith(
+              style: HandamTypography.headline1.copyWith(
                 color: Colors.white,
                 height: 1.2,
               ),
@@ -201,7 +201,7 @@ class OnboardingSlide extends StatelessWidget {
             // 부제목
             Text(
               subtitle,
-              style: AppTextStyles.body1.copyWith(
+              style: HandamTypography.body1.copyWith(
                 color: Colors.white.withOpacity(0.8),
                 height: 1.5,
               ),

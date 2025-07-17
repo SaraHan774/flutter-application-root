@@ -45,7 +45,7 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('인증번호가 전송되었습니다.'),
-            backgroundColor: AppColors.success,
+            backgroundColor: Colors.green,
           ),
         );
       }
@@ -54,7 +54,7 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString()),
-            backgroundColor: AppColors.error,
+            backgroundColor: HandamColors.errorLight,
           ),
         );
       }
@@ -96,7 +96,7 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
                 // 제목
                 Text(
                   '전화번호를\n입력해주세요',
-                  style: AppTextStyles.headline1,
+                  style: HandamTypography.headline1,
                 ),
                 
                 const SizedBox(height: 16),
@@ -104,18 +104,18 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
                 // 설명
                 Text(
                   '안전한 인증을 위해 SMS로 인증번호를\n발송합니다',
-                  style: AppTextStyles.body1.copyWith(
-                    color: AppColors.textSecondary,
+                  style: HandamTypography.body1.copyWith(
+                    color: HandamColors.textSecondaryLight,
                   ),
                 ),
                 
                 const SizedBox(height: 48),
                 
                 // 전화번호 입력 필드
-                AppTextField(
+                HandamTextField(
                   controller: _phoneController,
-                  label: '전화번호',
-                  hint: '010-1234-5678',
+                  labelText: '전화번호',
+                  hintText: '010-1234-5678',
                   keyboardType: TextInputType.phone,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -139,18 +139,18 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.success.withOpacity(0.1),
+                      color: Colors.green.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.success),
+                                              border: Border.all(color: Colors.green),
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.check_circle, color: AppColors.success, size: 20),
+                        Icon(Icons.check_circle, color: Colors.green, size: 20),
                         const SizedBox(width: 8),
                         Text(
                           '인증번호가 전송되었습니다',
-                          style: AppTextStyles.body2.copyWith(
-                            color: AppColors.success,
+                          style: HandamTypography.body2.copyWith(
+                            color: Colors.green,
                           ),
                         ),
                       ],
@@ -163,15 +163,15 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
                 SizedBox(
                   width: double.infinity,
                   child: authState.when(
-                    loading: () => const PrimaryButton(
+                    loading: () => const HandamPrimaryButton(
                       onPressed: null,
                       text: '처리 중...',
                     ),
-                    error: (error, stack) => PrimaryButton(
+                    error: (error, stack) => HandamPrimaryButton(
                       onPressed: _onNextPressed,
                       text: _isCodeSent ? '다음' : '인증번호 받기',
                     ),
-                    data: (user) => PrimaryButton(
+                    data: (user) => HandamPrimaryButton(
                       onPressed: _onNextPressed,
                       text: _isCodeSent ? '다음' : '인증번호 받기',
                     ),

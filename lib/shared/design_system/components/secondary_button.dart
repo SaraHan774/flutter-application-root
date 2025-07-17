@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../colors.dart';
-import '../../typography.dart';
+import '../colors.dart';
+import '../typography.dart';
 
 /// 한담 Secondary Button 컴포넌트
 /// 보조 액션 버튼으로 사용

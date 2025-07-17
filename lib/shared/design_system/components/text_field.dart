@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../colors.dart';
-import '../../typography.dart';
+import '../colors.dart';
+import '../typography.dart';
 
 /// 한담 TextField 컴포넌트
 /// 입력 필드로 사용

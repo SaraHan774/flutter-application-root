@@ -30,8 +30,8 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       title: '한담',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      theme: HandamAppTheme.lightTheme,
+      darkTheme: HandamAppTheme.darkTheme,
       routerConfig: router,
     );
   }

@@ -36,7 +36,7 @@ class HandamAppTheme {
       scaffoldBackgroundColor: HandamColors.lightColorScheme.background,
 
       // Card 테마
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: HandamColors.lightColorScheme.surface,
         elevation: 1,
         shape: RoundedRectangleBorder(
@@ -147,7 +147,7 @@ class HandamAppTheme {
       ),
 
       // Dialog 테마
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: HandamColors.lightColorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),
@@ -204,7 +204,7 @@ class HandamAppTheme {
       scaffoldBackgroundColor: HandamColors.darkColorScheme.background,
 
       // Card 테마
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: HandamColors.darkColorScheme.surface,
         elevation: 1,
         shape: RoundedRectangleBorder(
@@ -315,7 +315,7 @@ class HandamAppTheme {
       ),
 
       // Dialog 테마
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: HandamColors.darkColorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),

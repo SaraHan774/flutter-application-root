@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../colors.dart';
-import '../../typography.dart';
+import '../colors.dart';
+import '../typography.dart';
 
 /// 한담 Primary Button 컴포넌트
 /// 메인 액션 버튼으로 사용
