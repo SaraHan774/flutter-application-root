@@ -18,6 +18,26 @@ jobs:
           flutter-version: '3.32.7'
           channel: 'stable'
       
+      # .env 파일 생성 (개별 GitHub Secrets에서)
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          # Firebase Configuration
+          FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_PROJECT_NUMBER=${{ secrets.FIREBASE_PROJECT_NUMBER }}
+          FIREBASE_API_KEY_ANDROID=${{ secrets.FIREBASE_API_KEY_ANDROID }}
+          FIREBASE_API_KEY_IOS=${{ secrets.FIREBASE_API_KEY_IOS }}
+          FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          FIREBASE_MESSAGING_SENDER_ID=${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+          FIREBASE_APP_ID_ANDROID=${{ secrets.FIREBASE_APP_ID_ANDROID }}
+          FIREBASE_APP_ID_IOS=${{ secrets.FIREBASE_APP_ID_IOS }}
+          
+          # App Configuration
+          APP_PACKAGE_NAME_ANDROID=${{ secrets.APP_PACKAGE_NAME_ANDROID }}
+          APP_BUNDLE_ID_IOS=${{ secrets.APP_BUNDLE_ID_IOS }}
+          EOF
+      
       # Flutter 의존성 설치
       - run: flutter pub get
       
