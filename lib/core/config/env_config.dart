@@ -14,7 +14,7 @@ class EnvConfig {
   static String _getEnv(String key, [String defaultValue = '']) {
     if (kIsWeb) {
       // 웹 환경에서는 String.fromEnvironment 사용
-      return const String.fromEnvironment(key, defaultValue: '');
+      return String.fromEnvironment(key, defaultValue: defaultValue);
     } else {
       // 모바일 환경에서는 dotenv 사용
       return dotenv.env[key] ?? defaultValue;
