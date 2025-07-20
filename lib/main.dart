@@ -9,8 +9,13 @@ import 'shared/shared.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // 환경 변수 로드
-  await dotenv.load(fileName: ".env");
+  // 환경 변수 로드 (웹에서는 환경 변수 직접 사용)
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    // 웹 환경에서는 환경 변수가 이미 설정되어 있음
+    print("Web environment detected, using environment variables directly");
+  }
   
   // Firebase 초기화 (EnvConfig 사용)
   await Firebase.initializeApp(
