@@ -1,6 +1,4 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'dart:io' show Platform;
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class EnvConfig {
   static const String _defaultProjectId = 'handam-app';
@@ -12,13 +10,8 @@ class EnvConfig {
 
   // 환경 변수 읽기 헬퍼 메서드
   static String _getEnv(String key, [String defaultValue = '']) {
-    if (kIsWeb) {
-      // 웹 환경에서는 String.fromEnvironment 사용
-      return String.fromEnvironment(key, defaultValue: defaultValue);
-    } else {
-      // 모바일 환경에서는 dotenv 사용
-      return dotenv.env[key] ?? defaultValue;
-    }
+    // 모든 환경에서 dotenv 사용 (웹에서는 .env 파일이 assets에 있어야 함)
+    return dotenv.env[key] ?? defaultValue;
   }
 
   // Firebase Configuration
