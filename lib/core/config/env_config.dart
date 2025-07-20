@@ -1,4 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class EnvConfig {
   static const String _defaultProjectId = 'handam-app';
@@ -8,42 +10,53 @@ class EnvConfig {
   static const String _defaultMessagingSenderId = '123456789';
   static const String _defaultAppId = '1:123456789:android:abcdef123456';
 
+  // 환경 변수 읽기 헬퍼 메서드
+  static String _getEnv(String key, [String defaultValue = '']) {
+    if (kIsWeb) {
+      // 웹 환경에서는 String.fromEnvironment 사용
+      return const String.fromEnvironment(key, defaultValue: '');
+    } else {
+      // 모바일 환경에서는 dotenv 사용
+      return dotenv.env[key] ?? defaultValue;
+    }
+  }
+
   // Firebase Configuration
   static String get firebaseProjectId => 
-      dotenv.env['FIREBASE_PROJECT_ID'] ?? _defaultProjectId;
+      _getEnv('FIREBASE_PROJECT_ID', _defaultProjectId);
   
   static String get firebaseApiKey => 
-      dotenv.env['FIREBASE_API_KEY_ANDROID'] ?? '';
+      _getEnv('FIREBASE_API_KEY_ANDROID', '');
   
   static String get firebaseAuthDomain => 
-      dotenv.env['FIREBASE_AUTH_DOMAIN'] ?? _defaultAuthDomain;
+      _getEnv('FIREBASE_AUTH_DOMAIN', _defaultAuthDomain);
   
   static String get firestoreDatabaseUrl => 
-      dotenv.env['FIRESTORE_DATABASE_URL'] ?? _defaultDatabaseUrl;
+      _getEnv('FIRESTORE_DATABASE_URL', _defaultDatabaseUrl);
   
   static String get firebaseStorageBucket => 
-      dotenv.env['FIREBASE_STORAGE_BUCKET'] ?? _defaultStorageBucket;
+      _getEnv('FIREBASE_STORAGE_BUCKET', _defaultStorageBucket);
   
   static String get firebaseMessagingSenderId => 
-      dotenv.env['FIREBASE_MESSAGING_SENDER_ID'] ?? _defaultMessagingSenderId;
+      _getEnv('FIREBASE_MESSAGING_SENDER_ID', _defaultMessagingSenderId);
   
   static String get firebaseAppId => 
-      dotenv.env['FIREBASE_APP_ID_ANDROID'] ?? _defaultAppId;
+      _getEnv('FIREBASE_APP_ID_ANDROID', _defaultAppId);
 
   // App Configuration
   static String get appName => 
-      dotenv.env['APP_NAME'] ?? '한담';
+      _getEnv('APP_NAME', '한담');
   
   static String get appVersion => 
-      dotenv.env['APP_VERSION'] ?? '1.0.0';
+      _getEnv('APP_VERSION', '1.0.0');
 
   // Environment check
   static bool get isDevelopment => 
-      dotenv.env['FLUTTER_ENV'] == 'development' || 
-      dotenv.env['FLUTTER_ENV'] == null;
+      _getEnv('FLUTTER_ENV', 'development') == 'development' || 
+      _getEnv('FLUTTER_ENV', '') == '';
   
   static bool get isProduction => 
-      dotenv.env['FLUTTER_ENV'] == 'production';
+      _getEnv('FLUTTER_ENV', '') == 'production';
 
   // Validation
   static bool get isFirebaseConfigured => 
