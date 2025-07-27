@@ -7,7 +7,7 @@ import '../typography.dart';
 class HandamPrimaryButton extends StatelessWidget {
   const HandamPrimaryButton({
     super.key,
-    required this.text,
+    required this.child,
     required this.onPressed,
     this.isLoading = false,
     this.isEnabled = true,
@@ -16,8 +16,8 @@ class HandamPrimaryButton extends StatelessWidget {
     this.borderRadius = 12.0,
   });
 
-  /// 버튼 텍스트
-  final String text;
+  /// 버튼 내용
+  final Widget child;
 
   /// 버튼 클릭 콜백
   final VoidCallback? onPressed;
@@ -79,7 +79,7 @@ class HandamPrimaryButton extends StatelessWidget {
                   ),
                 ),
               )
-            : Text(text),
+            : child,
       ),
     );
   }

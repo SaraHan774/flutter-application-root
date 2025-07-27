@@ -14,40 +14,40 @@ abstract class Failure {
 
 /// 네트워크 관련 에러
 class NetworkFailure extends Failure {
-  const NetworkFailure(String message, {String? code}) : super(message, code: code);
+  const NetworkFailure(super.message, {super.code});
 }
 
 /// 인증 관련 에러
 class AuthFailure extends Failure {
-  const AuthFailure(String message, {String? code}) : super(message, code: code);
+  const AuthFailure(super.message, {super.code});
 }
 
 /// Firestore 데이터베이스 관련 에러
 class DatabaseFailure extends Failure {
-  const DatabaseFailure(String message, {String? code}) : super(message, code: code);
+  const DatabaseFailure(super.message, {super.code});
 }
 
 /// 입력값 검증 에러
 class ValidationFailure extends Failure {
-  const ValidationFailure(String message, {String? code}) : super(message, code: code);
+  const ValidationFailure(super.message, {super.code});
 }
 
 /// 권한 관련 에러
 class PermissionFailure extends Failure {
-  const PermissionFailure(String message, {String? code}) : super(message, code: code);
+  const PermissionFailure(super.message, {super.code});
 }
 
 /// 알 수 없는 에러
 class UnknownFailure extends Failure {
-  const UnknownFailure(String message, {String? code}) : super(message, code: code);
+  const UnknownFailure(super.message, {super.code});
 }
 
 /// 서버 에러
 class ServerFailure extends Failure {
-  const ServerFailure(String message, {String? code}) : super(message, code: code);
+  const ServerFailure(super.message, {super.code});
 }
 
 /// 캐시 관련 에러
 class CacheFailure extends Failure {
-  const CacheFailure(String message, {String? code}) : super(message, code: code);
+  const CacheFailure(super.message, {super.code});
 } 

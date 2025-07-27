@@ -70,7 +70,7 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
       
       if (mounted) {
         // 인증 성공 시 프로필 설정 페이지로 이동
-        context.go(AppRoutes.profileSetup);
+        context.go(AppRoutes.nicknameSetup);
       }
     } catch (e) {
       if (mounted) {
@@ -177,7 +177,7 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
               authState.when(
                 data: (_) => HandamPrimaryButton(
                   onPressed: _getOtpCode().length == 6 ? _verifyOtp : null,
-                  text: '인증 확인',
+                  child: const Text('인증 확인'),
                 ),
                 loading: () => const Center(
                   child: CircularProgressIndicator(),
@@ -186,7 +186,7 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
                   children: [
                     HandamPrimaryButton(
                       onPressed: _verifyOtp,
-                      text: '다시 시도',
+                      child: const Text('다시 시도'),
                     ),
                     const SizedBox(height: 16),
                     Text(

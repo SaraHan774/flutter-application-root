@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'failure.dart';
 
 /// Firebase 에러를 앱의 Failure 클래스로 변환하는 핸들러

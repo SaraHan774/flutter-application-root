@@ -131,7 +131,7 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
               authState.when(
                 data: (_) => HandamPrimaryButton(
                   onPressed: _isCodeSent ? null : _sendVerificationCode,
-                  text: _isCodeSent ? '인증번호 전송됨' : '인증번호 받기',
+                  child: _isCodeSent ? const Text('인증번호 전송됨') : const Text('인증번호 받기'),
                 ),
                 loading: () => const Center(
                   child: CircularProgressIndicator(),
@@ -140,7 +140,7 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
                   children: [
                     HandamPrimaryButton(
                       onPressed: _sendVerificationCode,
-                      text: '다시 시도',
+                      child: const Text('다시 시도'),
                     ),
                     const SizedBox(height: 16),
                     Text(

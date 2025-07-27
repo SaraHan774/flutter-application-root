@@ -169,11 +169,11 @@
 ## 👤 Phase 7: Presentation 레이어 - 프로필 설정 화면 (우선순위: 높음)
 
 ### 7.1 프로필 설정 화면
-- [ ] `lib/presentation/pages/profile/` 디렉토리 생성
-  - [ ] `nickname_setup_page.dart` - 닉네임 설정 화면
-  - [ ] `emotion_selection_page.dart` - 감정 키워드 선택 화면
-  - [ ] `time_preference_page.dart` - 대화 시간대 선택 화면
-  - [ ] `empathy_survey_page.dart` - 공감 성향 설문 화면
+- [x] `lib/presentation/pages/profile/` 디렉토리 생성
+  - [x] `nickname_setup_page.dart` - 닉네임 설정 화면
+  - [x] `emotion_selection_page.dart` - 감정 키워드 선택 화면
+  - [x] `time_preference_page.dart` - 대화 시간대 선택 화면
+  - [x] `empathy_survey_page.dart` - 공감 성향 설문 화면
 
 ### 7.2 프로필 관련 위젯
 - [ ] `lib/presentation/widgets/profile/` 디렉토리 생성

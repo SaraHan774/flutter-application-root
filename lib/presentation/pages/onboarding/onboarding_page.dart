@@ -130,9 +130,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     width: double.infinity,
                     child: HandamPrimaryButton(
                       onPressed: _onNextPressed,
-                      text: _currentPage == _slides.length - 1 
+                      child: Text(_currentPage == _slides.length - 1 
                           ? '시작하기' 
-                          : '다음',
+                          : '다음'),
                     ),
                   ),
                 ],

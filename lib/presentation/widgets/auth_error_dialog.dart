@@ -138,7 +138,7 @@ class AuthErrorDialog extends StatelessWidget {
               Navigator.of(context).pop();
               onActionPressed?.call();
             },
-            text: actionText!,
+            child: Text(actionText!),
           ),
       ],
     );

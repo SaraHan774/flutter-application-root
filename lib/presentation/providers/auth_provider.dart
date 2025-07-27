@@ -1,8 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../core/core.dart';
-import '../../domain/entities/user_entity.dart';
-import '../../domain/usecases/auth/sign_in_with_phone.dart';
-import '../../domain/usecases/auth/verify_phone_code.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
 

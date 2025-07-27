@@ -2,7 +2,7 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/firebase_auth_datasource.dart';
 import '../datasources/firestore_user_datasource.dart';
-import '../models/user_model.dart';
+
 
 /// Auth Repository 구현체
 class AuthRepositoryImpl implements AuthRepository {

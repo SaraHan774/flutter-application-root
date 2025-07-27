@@ -12,7 +12,12 @@ class AppRoutes {
   static const String login = '/login';
   static const String phoneAuth = '/phone-auth';
   static const String otpVerification = '/otp-verification';
-  static const String profileSetup = '/profile-setup';
+  
+  // 프로필 설정 관련
+  static const String nicknameSetup = '/nickname-setup';
+  static const String emotionSelection = '/emotion-selection';
+  static const String timePreference = '/time-preference';
+  static const String empathySurvey = '/empathy-survey';
   
   // 메인 앱 화면들
   static const String home = '/home';
@@ -73,11 +78,32 @@ GoRouter appRouter(AppRouterRef ref) {
         },
       ),
       
-      // 프로필 설정 화면
+      // 닉네임 설정 화면
       GoRoute(
-        path: AppRoutes.profileSetup,
-        name: 'profileSetup',
-        builder: (context, state) => const ProfileSetupPage(),
+        path: AppRoutes.nicknameSetup,
+        name: 'nicknameSetup',
+        builder: (context, state) => const NicknameSetupPage(),
+      ),
+      
+      // 감정 키워드 선택 화면
+      GoRoute(
+        path: AppRoutes.emotionSelection,
+        name: 'emotionSelection',
+        builder: (context, state) => const EmotionSelectionPage(),
+      ),
+      
+      // 대화 시간대 선택 화면
+      GoRoute(
+        path: AppRoutes.timePreference,
+        name: 'timePreference',
+        builder: (context, state) => const TimePreferencePage(),
+      ),
+      
+      // 공감 성향 설문 화면
+      GoRoute(
+        path: AppRoutes.empathySurvey,
+        name: 'empathySurvey',
+        builder: (context, state) => const EmpathySurveyPage(),
       ),
       
       // 홈 화면

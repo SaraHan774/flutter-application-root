@@ -1,9 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../core/core.dart';
 import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/user/get_user_profile.dart';
 import '../../domain/usecases/user/update_user_profile.dart';
-import '../../data/data.dart';
 import '../../domain/domain.dart';
 import 'auth_provider.dart'; // userRepositoryProvider를 사용하기 위해 import
 
