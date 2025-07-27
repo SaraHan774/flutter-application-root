@@ -176,16 +176,16 @@
   - [x] `empathy_survey_page.dart` - 공감 성향 설문 화면
 
 ### 7.2 프로필 관련 위젯
-- [ ] `lib/presentation/widgets/profile/` 디렉토리 생성
-  - [ ] `nickname_input.dart` - 닉네임 입력 컴포넌트
-  - [ ] `emotion_chip_grid.dart` - 감정 키워드 그리드
-  - [ ] `time_preference_card.dart` - 시간대 선택 카드
-  - [ ] `survey_question.dart` - 설문 질문 컴포넌트
+- [x] `lib/presentation/widgets/profile/` 디렉토리 생성
+  - [x] `nickname_input.dart` - 닉네임 입력 컴포넌트
+  - [x] `emotion_chip_grid.dart` - 감정 키워드 그리드
+  - [x] `time_preference_card.dart` - 시간대 선택 카드
+  - [x] `survey_question.dart` - 설문 질문 컴포넌트
 
 ### 7.3 프로필 상태 관리
-- [ ] `lib/presentation/providers/profile/` 디렉토리 생성
-  - [ ] `profile_setup_provider.dart` - 프로필 설정 상태 관리
-  - [ ] `emotion_selection_provider.dart` - 감정 선택 상태 관리
+- [x] `lib/presentation/providers/profile/` 디렉토리 생성
+  - [x] `profile_setup_provider.dart` - 프로필 설정 상태 관리
+  - [x] `emotion_selection_provider.dart` - 감정 선택 상태 관리
 
 ---
 
