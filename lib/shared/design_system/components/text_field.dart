@@ -30,7 +30,7 @@ class HandamTextField extends StatefulWidget {
     this.inputFormatters,
     this.prefixIcon,
     this.suffixIcon,
-    this.height = 48.0,
+    this.height = 56.0,
     this.borderRadius = 10.0,
   });
 
@@ -203,7 +203,7 @@ class _HandamTextFieldState extends State<HandamTextField> {
           ),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16.0,
-            vertical: 12.0,
+            vertical: 16.0,
           ),
           hintStyle: HandamTypography.body1.copyWith(
             color: colorScheme.outline,
