@@ -6,6 +6,8 @@ import 'package:handam/shared/design_system/typography.dart';
 import 'package:handam/shared/design_system/components/primary_button.dart';
 
 import 'package:handam/presentation/widgets/auth_error_dialog.dart';
+import 'package:handam/presentation/providers/auth_provider.dart';
+import 'package:handam/presentation/providers/user_provider.dart';
 
 /// 대화 시간대 선택 화면
 /// 사용자가 하루 중 언제 대화하고 싶은지 선택할 수 있는 화면
@@ -69,16 +71,40 @@ class _TimePreferencePageState extends ConsumerState<TimePreferencePage> {
     }
 
     try {
-      // TODO: 사용자 프로필에 시간대 저장
-      // await ref.read(userProvider.notifier).updateUserProfile(
-      //   preferredTime: _selectedTimeSlot,
-      // );
+      final authState = ref.watch(authNotifierProvider);
       
-      // 임시로 다음 화면으로 이동
-      if (mounted) {
-        context.go('/empathy-survey');
-      }
+      return authState.when(
+        data: (user) async {
+          if (user == null) {
+            throw Exception('사용자 ID를 찾을 수 없습니다.');
+          }
+
+          // 사용자 프로필에 시간대 저장
+          await ref.read(userNotifierProvider.notifier).updateUserProfile(
+            userId: user.uid,
+            preferredTime: _selectedTimeSlot,
+          );
+          
+          print('[한담] [PROFILE] Preferred time saved: $_selectedTimeSlot');
+          
+          // AuthProvider 상태 새로고침
+          await ref.read(authNotifierProvider.notifier).refreshCurrentUser();
+          
+          // 다음 화면으로 이동
+          if (mounted) {
+            context.go('/empathy-survey');
+          }
+        },
+        loading: () {
+          throw Exception('사용자 정보를 불러오는 중입니다.');
+        },
+        error: (error, stackTrace) {
+          throw Exception('사용자 정보를 불러오는 중 오류가 발생했습니다: $error');
+        },
+      );
+      
     } catch (e) {
+      print('[한담] [PROFILE] Error saving preferred time: $e');
       AuthErrorDialogHelper.showGeneralError(
         context, 
         message: '시간대 설정 저장 중 오류가 발생했습니다.',

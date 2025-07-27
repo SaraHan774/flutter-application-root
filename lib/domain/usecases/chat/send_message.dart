@@ -1,5 +1,4 @@
 import '../../repositories/chat_repository.dart';
-import '../../entities/message_entity.dart';
 
 /// 채팅 메시지 전송 UseCase
 class SendMessageUseCase {
@@ -7,7 +6,17 @@ class SendMessageUseCase {
   SendMessageUseCase(this.repository);
 
   /// 채팅방에 메시지 전송
-  Future<void> call(String chatRoomId, MessageEntity message) async {
-    await repository.sendMessage(chatRoomId, message);
+  Future<void> call({
+    required String chatRoomId,
+    required String senderId,
+    required String content,
+    String? messageType,
+  }) async {
+    await repository.sendMessage(
+      chatRoomId: chatRoomId,
+      senderId: senderId,
+      content: content,
+      messageType: messageType,
+    );
   }
 } 

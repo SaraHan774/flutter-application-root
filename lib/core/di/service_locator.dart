@@ -2,6 +2,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import '../../data/data.dart';
+import '../../domain/repositories/matching_repository.dart';
+import '../../domain/repositories/chat_repository.dart';
 
 part 'service_locator.g.dart';
 
@@ -41,4 +44,20 @@ Stream<bool> isAuthenticated(IsAuthenticatedRef ref) {
 String? currentUserId(CurrentUserIdRef ref) {
   final auth = ref.watch(firebaseAuthProvider);
   return auth.currentUser?.uid;
+}
+
+/// 매칭 Repository 제공
+@riverpod
+MatchingRepository getMatchingRepository(GetMatchingRepositoryRef ref) {
+  final firestore = ref.watch(firestoreProvider);
+  final matchingDataSource = FirestoreMatchingDataSource(firestore);
+  return MatchingRepositoryImpl(matchingDataSource);
+}
+
+/// 채팅 Repository 제공
+@riverpod
+ChatRepository getChatRepository(GetChatRepositoryRef ref) {
+  final firestore = ref.watch(firestoreProvider);
+  final chatDataSource = FirestoreChatDataSource(firestore);
+  return ChatRepositoryImpl(chatDataSource);
 } 

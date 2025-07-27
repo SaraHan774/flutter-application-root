@@ -89,8 +89,25 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
       print('✅ OTP Verification Success!');
       
       if (mounted) {
-        // 인증 성공 시 프로필 설정 페이지로 이동
-        context.go(AppRoutes.nicknameSetup);
+        // 인증 성공 후 사용자 상태 확인
+        final authState = ref.read(authNotifierProvider);
+        authState.whenData((user) {
+          if (user != null) {
+            if (user.isProfileComplete) {
+              // 프로필 설정 완료: 홈 화면으로 이동
+              print('[한담] [OTP] User profile complete, navigating to home');
+              context.go(AppRoutes.home);
+            } else {
+              // 프로필 설정 미완료: 닉네임 설정 화면으로 이동
+              print('[한담] [OTP] User profile incomplete, navigating to nickname setup');
+              context.go(AppRoutes.nicknameSetup);
+            }
+          } else {
+            // 사용자 정보를 찾을 수 없음: 닉네임 설정 화면으로 이동
+            print('[한담] [OTP] No user data found, navigating to nickname setup');
+            context.go(AppRoutes.nicknameSetup);
+          }
+        });
       }
     } catch (e) {
       print('❌ OTP Verification Error: $e');

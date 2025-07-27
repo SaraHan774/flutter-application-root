@@ -59,6 +59,13 @@ class UserEntity extends Equatable {
     };
   }
 
+  /// 프로필 설정이 완료되었는지 확인
+  bool get isProfileComplete {
+    return nickname.isNotEmpty && 
+           emotionTags.length >= 3 && 
+           preferredTime.isNotEmpty;
+  }
+
   @override
   List<Object?> get props => [uid, nickname, emotionTags, preferredTime, empathyScore, createdAt, updatedAt];
 } 

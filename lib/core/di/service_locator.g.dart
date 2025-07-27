@@ -118,5 +118,45 @@ final currentUserIdProvider = AutoDisposeProvider<String?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentUserIdRef = AutoDisposeProviderRef<String?>;
+String _$getMatchingRepositoryHash() =>
+    r'ff4fc4151dce6c6b52e224b0079fcecbe1920172';
+
+/// 매칭 Repository 제공
+///
+/// Copied from [getMatchingRepository].
+@ProviderFor(getMatchingRepository)
+final getMatchingRepositoryProvider =
+    AutoDisposeProvider<MatchingRepository>.internal(
+  getMatchingRepository,
+  name: r'getMatchingRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$getMatchingRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GetMatchingRepositoryRef = AutoDisposeProviderRef<MatchingRepository>;
+String _$getChatRepositoryHash() => r'de0f7634cb14f3ad2c00d331e043f0da47a84083';
+
+/// 채팅 Repository 제공
+///
+/// Copied from [getChatRepository].
+@ProviderFor(getChatRepository)
+final getChatRepositoryProvider = AutoDisposeProvider<ChatRepository>.internal(
+  getChatRepository,
+  name: r'getChatRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$getChatRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GetChatRepositoryRef = AutoDisposeProviderRef<ChatRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

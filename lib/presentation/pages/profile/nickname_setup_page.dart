@@ -8,6 +8,8 @@ import 'package:handam/shared/design_system/components/secondary_button.dart';
 import 'package:handam/shared/design_system/components/text_field.dart';
 
 import 'package:handam/presentation/widgets/auth_error_dialog.dart';
+import 'package:handam/presentation/providers/auth_provider.dart';
+import 'package:handam/presentation/providers/user_provider.dart';
 
 /// 닉네임 설정 화면
 /// 사용자가 닉네임을 입력하고 중복 확인을 할 수 있는 화면
@@ -120,16 +122,45 @@ class _NicknameSetupPageState extends ConsumerState<NicknameSetupPage> {
     }
 
     try {
-      // TODO: 사용자 프로필에 닉네임 저장
-      // await ref.read(userProvider.notifier).updateUserProfile(
-      //   nickname: nickname,
-      // );
+      final nickname = _nicknameController.text.trim();
+      final authState = ref.watch(authNotifierProvider);
       
-      // 임시로 다음 화면으로 이동
-      if (mounted) {
-        context.go('/emotion-selection');
-      }
+      print('[한담] [DEBUG] AuthState: $authState');
+      print('[한담] [DEBUG] AuthState.value: ${authState.value}');
+      
+      return authState.when(
+        data: (user) async {
+          print('[한담] [DEBUG] User in when callback: $user');
+          if (user == null) {
+            throw Exception('사용자 ID를 찾을 수 없습니다.');
+          }
+
+          // 사용자 프로필에 닉네임 저장
+          await ref.read(userNotifierProvider.notifier).updateUserProfile(
+            userId: user.uid,
+            nickname: nickname,
+          );
+          
+          print('[한담] [PROFILE] Nickname saved: $nickname');
+          
+          // AuthProvider 상태 새로고침
+          await ref.read(authNotifierProvider.notifier).refreshCurrentUser();
+          
+          // 다음 화면으로 이동
+          if (mounted) {
+            context.go('/emotion-selection');
+          }
+        },
+        loading: () {
+          throw Exception('사용자 정보를 불러오는 중입니다.');
+        },
+        error: (error, stackTrace) {
+          throw Exception('사용자 정보를 불러오는 중 오류가 발생했습니다: $error');
+        },
+      );
+      
     } catch (e) {
+      print('[한담] [PROFILE] Error saving nickname: $e');
       AuthErrorDialogHelper.showGeneralError(
         context, 
         message: '닉네임 저장 중 오류가 발생했습니다.',

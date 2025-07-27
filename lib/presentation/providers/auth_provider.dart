@@ -11,10 +11,26 @@ class AuthNotifier extends _$AuthNotifier {
   String? _verificationId;
   
   @override
-  FutureOr<UserEntity?> build() {
-    // 초기 상태는 null (로그인되지 않음)
-    return null;
+  FutureOr<UserEntity?> build() async {
+    // Firebase Auth의 현재 사용자 상태를 확인
+    try {
+      final authRepository = ref.read(authRepositoryProvider);
+      final user = await authRepository.getCurrentUser();
+      
+      if (user != null) {
+        print('[한담] [AUTH] User loaded: ${user.uid}, profile complete: ${user.isProfileComplete}');
+      } else {
+        print('[한담] [AUTH] No user found');
+      }
+      
+      return user;
+    } catch (error, stackTrace) {
+      print('[한담] [AUTH] Error loading user: $error');
+      throw error;
+    }
   }
+
+
 
   /// 전화번호 인증 시작
   Future<String> sendPhoneVerificationCode(String phoneNumber) async {
@@ -94,7 +110,12 @@ class AuthNotifier extends _$AuthNotifier {
       final authRepository = ref.read(authRepositoryProvider);
       final user = await authRepository.getCurrentUser();
       state = AsyncValue.data(user);
+      
+      if (user != null) {
+        print('[한담] [AUTH] User refreshed: ${user.uid}, profile complete: ${user.isProfileComplete}');
+      }
     } catch (error, stackTrace) {
+      print('[한담] [AUTH] Error refreshing user: $error');
       state = AsyncValue.error(error, stackTrace);
     }
   }

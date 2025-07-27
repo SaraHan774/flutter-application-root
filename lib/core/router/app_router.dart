@@ -30,6 +30,10 @@ class AppRoutes {
   static const String friends = '/friends';
   static const String profile = '/profile';
   
+  // 매칭 관련
+  static const String matchingStatus = '/matching-status';
+  static const String matchingResult = '/matching-result';
+  
   // 설정 및 기타
   static const String settings = '/settings';
   static const String feedback = '/feedback';
@@ -122,6 +126,24 @@ GoRouter appRouter(AppRouterRef ref) {
         path: AppRoutes.home,
         name: 'home',
         builder: (context, state) => const HomePage(),
+      ),
+      
+      // 매칭 상태 화면
+      GoRoute(
+        path: AppRoutes.matchingStatus,
+        name: 'matchingStatus',
+        builder: (context, state) => const MatchingStatusPage(),
+      ),
+      
+      // 매칭 결과 화면 (동적 라우트)
+      GoRoute(
+        path: '${AppRoutes.matchingResult}/:matchingId',
+        name: 'matchingResult',
+        builder: (context, state) {
+          // TODO: 매칭 ID로 매칭 정보를 조회하여 MatchingResultPage에 전달
+          // 현재는 임시로 null을 전달 (실제 구현 시 매칭 정보 조회 로직 추가)
+          return const MatchingResultPage(matching: null);
+        },
       ),
       
       // TODO: 다음 화면들은 추후 구현 예정

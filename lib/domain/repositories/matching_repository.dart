@@ -7,4 +7,21 @@ abstract class MatchingRepository {
 
   /// 매칭 요청 (서버 트리거)
   Future<void> requestMatching(String uid);
+
+  /// 새로운 매칭 생성
+  Future<MatchingEntity> createMatching({
+    required String userA,
+    required String userB,
+    required String chatRoomId,
+  });
+
+  /// 매칭 취소
+  Future<void> cancelMatching(String matchingId);
+
+  /// 사용자의 매칭 이력 조회
+  Future<List<MatchingEntity>> getMatchingHistory({
+    required String uid,
+    int limit = 20,
+    DateTime? beforeDate,
+  });
 } 

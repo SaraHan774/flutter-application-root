@@ -6,6 +6,8 @@ import 'package:handam/shared/design_system/typography.dart';
 import 'package:handam/shared/design_system/components/primary_button.dart';
 import 'package:handam/shared/design_system/components/secondary_button.dart';
 import 'package:handam/presentation/widgets/auth_error_dialog.dart';
+import 'package:handam/presentation/providers/auth_provider.dart';
+import 'package:handam/presentation/providers/user_provider.dart';
 
 /// 공감 성향 설문 화면
 /// 사용자의 대화 성향을 파악하기 위한 간단한 설문 화면
@@ -87,17 +89,41 @@ class _EmpathySurveyPageState extends ConsumerState<EmpathySurveyPage> {
   /// 설문 완료
   void _completeSurvey() async {
     try {
-      // TODO: 사용자 프로필에 공감 성향 점수 저장
-      // final empathyScore = _calculateEmpathyScore();
-      // await ref.read(userProvider.notifier).updateUserProfile(
-      //   empathyScore: empathyScore,
-      // );
+      final authState = ref.watch(authNotifierProvider);
       
-      // 임시로 홈 화면으로 이동
-      if (mounted) {
-        context.go('/home');
-      }
+      return authState.when(
+        data: (user) async {
+          if (user == null) {
+            throw Exception('사용자 ID를 찾을 수 없습니다.');
+          }
+
+          final empathyScore = _calculateEmpathyScore();
+          
+          // 사용자 프로필에 공감 성향 점수 저장
+          await ref.read(userNotifierProvider.notifier).updateUserProfile(
+            userId: user.uid,
+            empathyScore: empathyScore,
+          );
+          
+          print('[한담] [PROFILE] Empathy score saved: $empathyScore');
+          
+          // AuthProvider 상태 새로고침
+          await ref.read(authNotifierProvider.notifier).refreshCurrentUser();
+          
+          // 홈 화면으로 이동
+          if (mounted) {
+            context.go('/home');
+          }
+        },
+        loading: () {
+          throw Exception('사용자 정보를 불러오는 중입니다.');
+        },
+        error: (error, stackTrace) {
+          throw Exception('사용자 정보를 불러오는 중 오류가 발생했습니다: $error');
+        },
+      );
     } catch (e) {
+      print('[한담] [PROFILE] Error saving empathy score: $e');
       AuthErrorDialogHelper.showGeneralError(
         context, 
         message: '설문 결과 저장 중 오류가 발생했습니다.',
@@ -105,19 +131,75 @@ class _EmpathySurveyPageState extends ConsumerState<EmpathySurveyPage> {
     }
   }
 
+  /// 공감 성향 점수 계산
+  double _calculateEmpathyScore() {
+    double totalScore = 0;
+    int answeredCount = 0;
+    
+    for (int i = 0; i < _questions.length; i++) {
+      final answer = _answers[i];
+      if (answer != null) {
+        answeredCount++;
+        switch (answer) {
+          case '매우 그렇다':
+            totalScore += 5;
+            break;
+          case '그렇다':
+            totalScore += 4;
+            break;
+          case '보통이다':
+            totalScore += 3;
+            break;
+          case '아니다':
+            totalScore += 2;
+            break;
+          case '매우 아니다':
+            totalScore += 1;
+            break;
+        }
+      }
+    }
+    
+    return answeredCount > 0 ? totalScore / answeredCount : 3.0;
+  }
+
   /// 설문 건너뛰기
   void _skipSurvey() async {
     try {
-      // TODO: 기본 공감 성향 점수로 저장
-      // await ref.read(userProvider.notifier).updateUserProfile(
-      //   empathyScore: 3.0, // 기본값
-      // );
+      final authState = ref.watch(authNotifierProvider);
       
-      // 임시로 홈 화면으로 이동
-      if (mounted) {
-        context.go('/home');
-      }
+      return authState.when(
+        data: (user) async {
+          if (user == null) {
+            throw Exception('사용자 ID를 찾을 수 없습니다.');
+          }
+
+          // 기본 공감 성향 점수로 저장
+          await ref.read(userNotifierProvider.notifier).updateUserProfile(
+            userId: user.uid,
+            empathyScore: 3.0, // 기본값
+          );
+          
+          print('[한담] [PROFILE] Default empathy score saved: 3.0');
+          
+          // AuthProvider 상태 새로고침
+          await ref.read(authNotifierProvider.notifier).refreshCurrentUser();
+          
+          // 홈 화면으로 이동
+          if (mounted) {
+            context.go('/home');
+          }
+        },
+        loading: () {
+          throw Exception('사용자 정보를 불러오는 중입니다.');
+        },
+        error: (error, stackTrace) {
+          throw Exception('사용자 정보를 불러오는 중 오류가 발생했습니다: $error');
+        },
+      );
+      
     } catch (e) {
+      print('[한담] [PROFILE] Error saving default empathy score: $e');
       AuthErrorDialogHelper.showGeneralError(
         context, 
         message: '설문 건너뛰기 중 오류가 발생했습니다.',

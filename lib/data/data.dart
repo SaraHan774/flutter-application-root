@@ -3,11 +3,17 @@
 
 // 모델
 export 'models/user_model.dart';
+export 'models/matching_model.dart';
+export 'models/chat_room_model.dart';
 
 // 데이터 소스
 export 'datasources/firebase_auth_datasource.dart';
 export 'datasources/firestore_user_datasource.dart';
+export 'datasources/firestore_matching_datasource.dart';
+export 'datasources/firestore_chat_datasource.dart';
 
 // Repository 구현체
 export 'repositories/auth_repository_impl.dart';
-export 'repositories/user_repository_impl.dart'; 
+export 'repositories/user_repository_impl.dart';
+export 'repositories/matching_repository_impl.dart';
+export 'repositories/chat_repository_impl.dart'; 

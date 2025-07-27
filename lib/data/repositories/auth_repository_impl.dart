@@ -2,6 +2,7 @@ import '../../domain/entities/user_entity.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/firebase_auth_datasource.dart';
 import '../datasources/firestore_user_datasource.dart';
+import '../models/user_model.dart';
 
 
 /// Auth Repository 구현체
@@ -33,13 +34,20 @@ class AuthRepositoryImpl implements AuthRepository {
     final userModel = await _userDataSource.getUserById(firebaseUser.uid);
     
     if (userModel == null) {
-      // 새 사용자인 경우 기본 UserEntity 반환 (프로필 설정 필요)
-      return UserEntity(
+      // 새 사용자인 경우 기본 UserEntity 생성 및 Firestore에 저장
+      final newUser = UserEntity(
         uid: firebaseUser.uid,
         nickname: '',
         emotionTags: [],
         preferredTime: '',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
+      
+      // Firestore에 기본 사용자 정보 저장
+      await _userDataSource.createUserProfile(UserModel.fromEntity(newUser));
+      
+      return newUser;
     }
 
     return userModel.toEntity();

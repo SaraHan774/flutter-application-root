@@ -5,6 +5,8 @@ import 'package:handam/shared/design_system/colors.dart';
 import 'package:handam/shared/design_system/typography.dart';
 import 'package:handam/shared/design_system/components/primary_button.dart';
 import 'package:handam/presentation/widgets/auth_error_dialog.dart';
+import 'package:handam/presentation/providers/auth_provider.dart';
+import 'package:handam/presentation/providers/user_provider.dart';
 
 /// 감정 키워드 선택 화면
 /// 사용자가 최소 3개, 최대 5개의 감정 키워드를 선택할 수 있는 화면
@@ -66,16 +68,40 @@ class _EmotionSelectionPageState extends ConsumerState<EmotionSelectionPage> {
     }
 
     try {
-      // TODO: 사용자 프로필에 감정 키워드 저장
-      // await ref.read(userProvider.notifier).updateUserProfile(
-      //   emotionTags: _selectedEmotions.toList(),
-      // );
+      final authState = ref.watch(authNotifierProvider);
       
-      // 임시로 다음 화면으로 이동
-      if (mounted) {
-        context.go('/time-preference');
-      }
+      return authState.when(
+        data: (user) async {
+          if (user == null) {
+            throw Exception('사용자 ID를 찾을 수 없습니다.');
+          }
+
+          // 사용자 프로필에 감정 키워드 저장
+          await ref.read(userNotifierProvider.notifier).updateUserProfile(
+            userId: user.uid,
+            emotionTags: _selectedEmotions.toList(),
+          );
+          
+          print('[한담] [PROFILE] Emotion tags saved: ${_selectedEmotions.toList()}');
+          
+          // AuthProvider 상태 새로고침
+          await ref.read(authNotifierProvider.notifier).refreshCurrentUser();
+          
+          // 다음 화면으로 이동
+          if (mounted) {
+            context.go('/time-preference');
+          }
+        },
+        loading: () {
+          throw Exception('사용자 정보를 불러오는 중입니다.');
+        },
+        error: (error, stackTrace) {
+          throw Exception('사용자 정보를 불러오는 중 오류가 발생했습니다: $error');
+        },
+      );
+      
     } catch (e) {
+      print('[한담] [PROFILE] Error saving emotion tags: $e');
       AuthErrorDialogHelper.showGeneralError(
         context, 
         message: '감정 키워드 저장 중 오류가 발생했습니다.',

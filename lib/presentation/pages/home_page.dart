@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../shared/shared.dart';
 
 /// 홈 화면
@@ -141,13 +142,26 @@ class _HomePageState extends ConsumerState<HomePage> {
           
           const SizedBox(height: 16),
           
-          // 매칭 시작 버튼 (비활성화 상태)
-          SizedBox(
-            width: double.infinity,
-            child: HandamPrimaryButton(
-              onPressed: null, // 매칭 완료 시에만 활성화
-              child: const Text('매칭 대기 중'),
-            ),
+          // 매칭 상태 확인 버튼
+          Row(
+            children: [
+              Expanded(
+                child: HandamSecondaryButton(
+                  onPressed: () {
+                    // 매칭 상태 페이지로 이동
+                    context.push('/matching-status');
+                  },
+                  child: const Text('매칭 상태 확인'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: HandamPrimaryButton(
+                  onPressed: null, // 매칭 완료 시에만 활성화
+                  child: const Text('매칭 대기 중'),
+                ),
+              ),
+            ],
           ),
         ],
       ),

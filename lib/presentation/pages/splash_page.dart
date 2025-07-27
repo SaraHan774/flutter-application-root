@@ -81,15 +81,25 @@ class _SplashPageState extends ConsumerState<SplashPage>
     authState.when(
       data: (user) {
         if (user != null) {
-          // 로그인된 사용자: 홈 화면으로 이동
-          context.go(AppRoutes.home);
+          // 로그인된 사용자
+          if (user.isProfileComplete) {
+            // 프로필 설정 완료: 홈 화면으로 이동
+            print('[한담] [SPLASH] User profile complete, navigating to home');
+            context.go(AppRoutes.home);
+          } else {
+            // 프로필 설정 미완료: 닉네임 설정 화면으로 이동
+            print('[한담] [SPLASH] User profile incomplete, navigating to nickname setup');
+            context.go(AppRoutes.nicknameSetup);
+          }
         } else {
           // 로그인되지 않은 사용자: 온보딩 화면으로 이동
+          print('[한담] [SPLASH] No user found, navigating to onboarding');
           context.go(AppRoutes.onboarding);
         }
       },
       loading: () {
         // 로딩 중: 잠시 더 대기
+        print('[한담] [SPLASH] Auth loading, waiting...');
         Future.delayed(const Duration(seconds: 1), () {
           if (mounted) {
             context.go(AppRoutes.onboarding);
@@ -98,6 +108,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
       },
       error: (error, stackTrace) {
         // 에러 발생: 온보딩 화면으로 이동
+        print('[한담] [SPLASH] Auth error: $error, navigating to onboarding');
         context.go(AppRoutes.onboarding);
       },
     );
