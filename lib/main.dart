@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kReleaseMode;
 import 'firebase_options.dart';
 import 'core/core.dart';
 import 'shared/shared.dart';
@@ -10,15 +10,16 @@ import 'shared/shared.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // ✅ 웹이 아닌 경우에만 .env 로드
-  if (!kIsWeb) {
+  // ✅ 로컬 개발 환경에서만 .env 로드 (웹이든 모바일이든)
+  if (!kReleaseMode) {
     try {
       await dotenv.load(fileName: ".env");
+      print("Local development: .env file loaded successfully");
     } catch (e) {
       print("Failed to load .env file: $e");
     }
   } else {
-    print("Web environment detected, using firebase_options.dart");
+    print("Production environment: using firebase_options.dart");
   }
 
   // Firebase 초기화 (firebase_options.dart 사용)

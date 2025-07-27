@@ -2,7 +2,8 @@
 // ignore_for_file: type=lint
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+    show defaultTargetPlatform, kIsWeb, kReleaseMode, TargetPlatform;
+import 'core/config/env_config.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -43,40 +44,62 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_API_KEY_ANDROID'), // Android API Key를 웹에서도 사용
-    appId: String.fromEnvironment('FIREBASE_APP_ID_ANDROID'), // Android App ID를 웹에서도 사용
-    messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
-    projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
-    authDomain: String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
-    storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
-  );
+  static FirebaseOptions get web {
+    // 로컬 개발 시에는 EnvConfig 사용, 프로덕션에서는 String.fromEnvironment 사용
+    if (!kReleaseMode) {
+      // 로컬 개발 환경 (웹이든 모바일이든)
+      return FirebaseOptions(
+        apiKey: EnvConfig.firebaseApiKey,
+        appId: EnvConfig.firebaseAppId,
+        messagingSenderId: EnvConfig.firebaseMessagingSenderId,
+        projectId: EnvConfig.firebaseProjectId,
+        authDomain: EnvConfig.firebaseAuthDomain,
+        storageBucket: EnvConfig.firebaseStorageBucket,
+      );
+    } else {
+      // 프로덕션 웹 환경
+      return const FirebaseOptions(
+        apiKey: String.fromEnvironment('FIREBASE_API_KEY_ANDROID'),
+        appId: String.fromEnvironment('FIREBASE_APP_ID_ANDROID'),
+        messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
+        projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
+        authDomain: String.fromEnvironment('FIREBASE_AUTH_DOMAIN'),
+        storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
+      );
+    }
+  }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_API_KEY_ANDROID'),
-    appId: String.fromEnvironment('FIREBASE_APP_ID_ANDROID'),
-    messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
-    projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
-    storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
-  );
+  static FirebaseOptions get android {
+    return FirebaseOptions(
+      apiKey: EnvConfig.firebaseApiKey,
+      appId: EnvConfig.firebaseAppId,
+      messagingSenderId: EnvConfig.firebaseMessagingSenderId,
+      projectId: EnvConfig.firebaseProjectId,
+      storageBucket: EnvConfig.firebaseStorageBucket,
+    );
+  }
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_API_KEY_IOS'),
-    appId: String.fromEnvironment('FIREBASE_APP_ID_IOS'),
-    messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
-    projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
-    storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
-    iosClientId: String.fromEnvironment('FIREBASE_IOS_CLIENT_ID'),
-    iosBundleId: String.fromEnvironment('FIREBASE_IOS_BUNDLE_ID'),
-  );
+  static FirebaseOptions get ios {
+    return FirebaseOptions(
+      apiKey: EnvConfig.firebaseApiKey,
+      appId: EnvConfig.firebaseAppId,
+      messagingSenderId: EnvConfig.firebaseMessagingSenderId,
+      projectId: EnvConfig.firebaseProjectId,
+      storageBucket: EnvConfig.firebaseStorageBucket,
+      iosClientId: EnvConfig.firebaseAppId, // iOS 클라이언트 ID는 앱 ID와 동일하게 설정
+      iosBundleId: 'com.example.handam', // iOS 번들 ID
+    );
+  }
 
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: String.fromEnvironment('FIREBASE_API_KEY_IOS'),
-    appId: String.fromEnvironment('FIREBASE_APP_ID_IOS'),
-    messagingSenderId: String.fromEnvironment('FIREBASE_MESSAGING_SENDER_ID'),
-    projectId: String.fromEnvironment('FIREBASE_PROJECT_ID'),
-    storageBucket: String.fromEnvironment('FIREBASE_STORAGE_BUCKET'),
-    iosClientId: String.fromEnvironment('FIREBASE_IOS_CLIENT_ID'),
-    iosBundleId: String.fromEnvironment('FIREBASE_IOS_BUNDLE_ID'),
-  );
+  static FirebaseOptions get macos {
+    return FirebaseOptions(
+      apiKey: EnvConfig.firebaseApiKey,
+      appId: EnvConfig.firebaseAppId,
+      messagingSenderId: EnvConfig.firebaseMessagingSenderId,
+      projectId: EnvConfig.firebaseProjectId,
+      storageBucket: EnvConfig.firebaseStorageBucket,
+      iosClientId: EnvConfig.firebaseAppId, // macOS 클라이언트 ID는 앱 ID와 동일하게 설정
+      iosBundleId: 'com.example.handam', // macOS 번들 ID
+    );
+  }
 } 
