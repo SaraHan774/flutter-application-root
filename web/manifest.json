@@ -1,11 +1,11 @@
 {
-    "name": "application_root",
-    "short_name": "application_root",
+    "name": "한담",
+    "short_name": "한담",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "하루 한 번, 진심 어린 대화를 나누는 공간",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

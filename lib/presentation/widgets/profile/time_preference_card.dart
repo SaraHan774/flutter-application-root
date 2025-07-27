@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:application_root/shared/design_system/colors.dart';
-import 'package:application_root/shared/design_system/typography.dart';
+import 'package:handam/shared/design_system/colors.dart';
+import 'package:handam/shared/design_system/typography.dart';
 
 /// 시간대 옵션 모델
 class TimeSlotOption {

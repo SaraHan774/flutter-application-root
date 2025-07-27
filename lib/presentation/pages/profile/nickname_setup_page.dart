@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:application_root/shared/design_system/colors.dart';
-import 'package:application_root/shared/design_system/typography.dart';
-import 'package:application_root/shared/design_system/components/primary_button.dart';
-import 'package:application_root/shared/design_system/components/secondary_button.dart';
-import 'package:application_root/shared/design_system/components/text_field.dart';
+import 'package:handam/shared/design_system/colors.dart';
+import 'package:handam/shared/design_system/typography.dart';
+import 'package:handam/shared/design_system/components/primary_button.dart';
+import 'package:handam/shared/design_system/components/secondary_button.dart';
+import 'package:handam/shared/design_system/components/text_field.dart';
 
-import 'package:application_root/presentation/widgets/auth_error_dialog.dart';
+import 'package:handam/presentation/widgets/auth_error_dialog.dart';
 
 /// 닉네임 설정 화면
 /// 사용자가 닉네임을 입력하고 중복 확인을 할 수 있는 화면

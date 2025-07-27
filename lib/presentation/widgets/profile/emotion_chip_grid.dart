@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:application_root/shared/design_system/colors.dart';
-import 'package:application_root/shared/design_system/typography.dart';
+import 'package:handam/shared/design_system/colors.dart';
+import 'package:handam/shared/design_system/typography.dart';
 
 /// 감정 키워드 그리드 컴포넌트
 /// 감정 키워드를 칩 형태로 선택할 수 있는 재사용 가능한 위젯

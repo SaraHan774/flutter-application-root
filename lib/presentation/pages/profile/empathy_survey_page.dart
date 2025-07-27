@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:application_root/shared/design_system/colors.dart';
-import 'package:application_root/shared/design_system/typography.dart';
-import 'package:application_root/shared/design_system/components/primary_button.dart';
-import 'package:application_root/shared/design_system/components/secondary_button.dart';
-import 'package:application_root/presentation/widgets/auth_error_dialog.dart';
+import 'package:handam/shared/design_system/colors.dart';
+import 'package:handam/shared/design_system/typography.dart';
+import 'package:handam/shared/design_system/components/primary_button.dart';
+import 'package:handam/shared/design_system/components/secondary_button.dart';
+import 'package:handam/presentation/widgets/auth_error_dialog.dart';
 
 /// 공감 성향 설문 화면
 /// 사용자의 대화 성향을 파악하기 위한 간단한 설문 화면

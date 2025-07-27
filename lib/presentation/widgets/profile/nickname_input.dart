@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:application_root/shared/design_system/colors.dart';
-import 'package:application_root/shared/design_system/components/text_field.dart';
-import 'package:application_root/shared/design_system/components/secondary_button.dart';
+import 'package:handam/shared/design_system/colors.dart';
+import 'package:handam/shared/design_system/components/text_field.dart';
+import 'package:handam/shared/design_system/components/secondary_button.dart';
 
 /// 닉네임 입력 컴포넌트
 /// 재사용 가능한 닉네임 입력 필드와 관련 기능들을 제공

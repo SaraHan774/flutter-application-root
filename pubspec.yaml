@@ -1,5 +1,5 @@
-name: application_root
-description: A new Flutter project.
+name: handam
+description: 하루 한 번, 진심 어린 대화를 나누는 공간
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.

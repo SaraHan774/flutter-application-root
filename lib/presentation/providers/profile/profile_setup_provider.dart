@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:application_root/domain/entities/user_entity.dart';
+import 'package:handam/domain/entities/user_entity.dart';
 
 part 'profile_setup_provider.g.dart';
 
