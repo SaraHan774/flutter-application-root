@@ -68,6 +68,8 @@ class AuthNotifier extends _$AuthNotifier {
       state = AsyncValue.data(user);
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
+      // 에러를 다시 던져서 UI에서 처리할 수 있도록 함
+      rethrow;
     }
   }
 

@@ -61,18 +61,32 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
 
     final otpCode = _getOtpCode();
     
+    // 전화번호에서 숫자만 추출하고 국가 코드 추가 (PhoneAuthPage와 동일한 형식)
+    final digits = widget.phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
+    final formattedPhoneNumber = '+82${digits.substring(1)}'; // 010 -> +8210
+    
+    print('🔍 OTP Verification Debug:');
+    print('  - Original Phone: ${widget.phoneNumber}');
+    print('  - Formatted Phone: $formattedPhoneNumber');
+    print('  - OTP Code: $otpCode');
+    print('  - Verification ID: ${widget.verificationId}');
+    
     try {
       await ref.read(authNotifierProvider.notifier).verifyPhoneCode(
-        phoneNumber: widget.phoneNumber,
+        phoneNumber: formattedPhoneNumber,
         smsCode: otpCode,
         verificationId: widget.verificationId,
       );
+      
+      print('✅ OTP Verification Success!');
       
       if (mounted) {
         // 인증 성공 시 프로필 설정 페이지로 이동
         context.go(AppRoutes.nicknameSetup);
       }
     } catch (e) {
+      print('❌ OTP Verification Error: $e');
+      
       if (mounted) {
         // 에러를 Failure 객체로 변환하여 다이얼로그 표시
         final failure = e is Failure ? e : UnknownFailure(e.toString());
@@ -165,6 +179,9 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
                         if (value == null || value.isEmpty) {
                           return '';
                         }
+                        if (value.length != 1) {
+                          return '';
+                        }
                         return null;
                       },
                     ),
@@ -176,7 +193,10 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
               // 인증 확인 버튼
               authState.when(
                 data: (_) => HandamPrimaryButton(
-                  onPressed: _getOtpCode().length == 6 ? _verifyOtp : null,
+                  onPressed: _getOtpCode().length == 6 ? () {
+                    print('🔘 Verify button pressed');
+                    _verifyOtp();
+                  } : null,
                   child: const Text('인증 확인'),
                 ),
                 loading: () => const Center(
