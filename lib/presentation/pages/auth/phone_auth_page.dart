@@ -18,7 +18,6 @@ class PhoneAuthPage extends ConsumerStatefulWidget {
 class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
   final _formKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
-  String _verificationId = '';
   bool _isCodeSent = false;
 
   @override
@@ -33,12 +32,10 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
     final phoneNumber = _phoneController.text.trim();
     
     try {
-      await ref.read(authNotifierProvider.notifier).sendPhoneVerificationCode(phoneNumber);
-      
-      // TODO: 실제 verificationId는 Firebase Auth 콜백에서 받아야 함
-      _verificationId = 'temp_verification_id';
+      final verificationId = await ref.read(authNotifierProvider.notifier).sendPhoneVerificationCode(phoneNumber);
       
       setState(() {
+        _verificationId = verificationId;
         _isCodeSent = true;
       });
       
@@ -52,7 +49,7 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
         
         // OTP 인증 페이지로 이동 (쿼리 파라미터 전달)
         context.go(
-          '${AppRoutes.otpVerification}?phoneNumber=$phoneNumber&verificationId=$_verificationId',
+          '${AppRoutes.otpVerification}?phoneNumber=$phoneNumber&verificationId=$verificationId',
         );
       }
     } catch (e) {

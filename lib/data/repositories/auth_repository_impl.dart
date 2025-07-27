@@ -12,8 +12,8 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._authDataSource, this._userDataSource);
 
   @override
-  Future<void> sendPhoneVerificationCode(String phoneNumber) async {
-    await _authDataSource.sendPhoneVerificationCode(phoneNumber);
+  Future<String> sendPhoneVerificationCode(String phoneNumber) async {
+    return await _authDataSource.sendPhoneVerificationCode(phoneNumber);
   }
 
   @override

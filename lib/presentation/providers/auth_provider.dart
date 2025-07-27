@@ -8,6 +8,8 @@ part 'auth_provider.g.dart';
 /// 인증 상태 관리 Provider
 @riverpod
 class AuthNotifier extends _$AuthNotifier {
+  String? _verificationId;
+  
   @override
   FutureOr<UserEntity?> build() {
     // 초기 상태는 null (로그인되지 않음)
@@ -15,7 +17,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   /// 전화번호 인증 시작
-  Future<void> sendPhoneVerificationCode(String phoneNumber) async {
+  Future<String> sendPhoneVerificationCode(String phoneNumber) async {
     try {
       state = const AsyncValue.loading();
       
@@ -23,14 +25,20 @@ class AuthNotifier extends _$AuthNotifier {
         ref.read(authRepositoryProvider),
       );
       
-      await signInUseCase.call(phoneNumber);
+      _verificationId = await signInUseCase.call(phoneNumber);
       
       // 성공 시 상태는 그대로 유지 (아직 로그인되지 않음)
       state = const AsyncValue.data(null);
+      
+      return _verificationId!;
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
+      rethrow;
     }
   }
+
+  /// 저장된 verificationId 반환
+  String? get verificationId => _verificationId;
 
   /// 인증번호 확인 및 로그인
   Future<void> verifyPhoneCode({

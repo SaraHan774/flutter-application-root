@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/core.dart';
 
@@ -12,6 +13,9 @@ class FirebaseAuthDataSource {
     try {
       AppLogger.auth('sendPhoneVerificationCode', userId: phoneNumber);
       
+      // Completer를 사용하여 verificationId를 기다림
+      final completer = Completer<String>();
+      
       await _firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) {
@@ -20,20 +24,27 @@ class FirebaseAuthDataSource {
         },
         verificationFailed: (FirebaseAuthException e) {
           AppLogger.auth('verificationFailed', userId: phoneNumber, error: e.message);
-          throw ErrorHandler.handleAuthError(e);
+          if (!completer.isCompleted) {
+            completer.completeError(ErrorHandler.handleAuthError(e));
+          }
         },
         codeSent: (String verificationId, int? resendToken) {
           AppLogger.auth('codeSent', userId: phoneNumber);
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           AppLogger.auth('codeAutoRetrievalTimeout', userId: phoneNumber);
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
         },
         timeout: const Duration(seconds: 60),
       );
 
-      // verificationId는 codeSent 콜백에서 반환되어야 하지만,
-      // 현재 구조에서는 별도로 관리해야 함
-      return 'verification_id_placeholder';
+      // verificationId를 기다림
+      return await completer.future;
     } catch (e) {
       AppLogger.error('sendPhoneVerificationCode failed', e);
       rethrow;
