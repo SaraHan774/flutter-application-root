@@ -68,7 +68,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0
   
   # Code Generation
-  build_runner: ^2.4.13
+  build_runner: ^2.4.11
   riverpod_annotation: ^2.3.5
   riverpod_generator: ^2.3.5
 
