@@ -199,9 +199,9 @@
   - [x] 테마 적용
 
 ### 8.2 앱 진입점 로직
-- [ ] `lib/presentation/pages/` 디렉토리 생성
-  - [ ] `splash_page.dart` - 스플래시 화면
-  - [ ] `home_page.dart` - 홈 화면 (기본 구조)
+- [x] `lib/presentation/pages/` 디렉토리 생성
+  - [x] `splash_page.dart` - 스플래시 화면
+  - [x] `home_page.dart` - 홈 화면 (기본 구조)
 
 ---
 

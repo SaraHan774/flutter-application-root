@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../presentation/presentation.dart';
+import '../../shared/shared.dart';
 
 part 'app_router.g.dart';
 
 /// 앱의 라우팅 경로 상수들
 class AppRoutes {
+  // 스플래시 화면
+  static const String splash = '/splash';
+  
   // 온보딩 및 인증 관련
   static const String onboarding = '/onboarding';
   static const String login = '/login';
@@ -39,9 +43,16 @@ class AppRoutes {
 @riverpod
 GoRouter appRouter(AppRouterRef ref) {
   return GoRouter(
-    initialLocation: AppRoutes.onboarding,
+    initialLocation: AppRoutes.splash,
     debugLogDiagnostics: true,
     routes: [
+      // 스플래시 화면
+      GoRoute(
+        path: AppRoutes.splash,
+        name: 'splash',
+        builder: (context, state) => const SplashPage(),
+      ),
+      
       // 온보딩 화면
       GoRoute(
         path: AppRoutes.onboarding,
@@ -49,12 +60,12 @@ GoRouter appRouter(AppRouterRef ref) {
         builder: (context, state) => const OnboardingPage(),
       ),
       
-      // 로그인 화면
-      GoRoute(
-        path: AppRoutes.login,
-        name: 'login',
-        builder: (context, state) => const LoginPage(),
-      ),
+      // TODO: 로그인 화면은 추후 구현 예정
+      // GoRoute(
+      //   path: AppRoutes.login,
+      //   name: 'login',
+      //   builder: (context, state) => const LoginPage(),
+      // ),
       
       // 휴대폰 인증 화면
       GoRoute(
@@ -113,68 +124,95 @@ GoRouter appRouter(AppRouterRef ref) {
         builder: (context, state) => const HomePage(),
       ),
       
+      // TODO: 다음 화면들은 추후 구현 예정
       // 채팅 목록 화면
-      GoRoute(
-        path: AppRoutes.chat,
-        name: 'chat',
-        builder: (context, state) => const ChatListPage(),
-      ),
+      // GoRoute(
+      //   path: AppRoutes.chat,
+      //   name: 'chat',
+      //   builder: (context, state) => const ChatListPage(),
+      // ),
       
       // 채팅방 화면 (동적 라우트)
-      GoRoute(
-        path: '${AppRoutes.chatRoom}/:chatRoomId',
-        name: 'chatRoom',
-        builder: (context, state) {
-          final chatRoomId = state.pathParameters['chatRoomId']!;
-          return ChatRoomPage(chatRoomId: chatRoomId);
-        },
-      ),
+      // GoRoute(
+      //   path: '${AppRoutes.chatRoom}/:chatRoomId',
+      //   name: 'chatRoom',
+      //   builder: (context, state) {
+      //     final chatRoomId = state.pathParameters['chatRoomId']!;
+      //     return ChatRoomPage(chatRoomId: chatRoomId);
+      //   },
+      // ),
       
       // 친구 목록 화면
-      GoRoute(
-        path: AppRoutes.friends,
-        name: 'friends',
-        builder: (context, state) => const FriendsPage(),
-      ),
+      // GoRoute(
+      //   path: AppRoutes.friends,
+      //   name: 'friends',
+      //   builder: (context, state) => const FriendsPage(),
+      // ),
       
       // 프로필 화면
-      GoRoute(
-        path: AppRoutes.profile,
-        name: 'profile',
-        builder: (context, state) => const ProfilePage(),
-      ),
+      // GoRoute(
+      //   path: AppRoutes.profile,
+      //   name: 'profile',
+      //   builder: (context, state) => const ProfilePage(),
+      // ),
       
       // 설정 화면
-      GoRoute(
-        path: AppRoutes.settings,
-        name: 'settings',
-        builder: (context, state) => const SettingsPage(),
-      ),
+      // GoRoute(
+      //   path: AppRoutes.settings,
+      //   name: 'settings',
+      //   builder: (context, state) => const SettingsPage(),
+      // ),
       
       // 피드백 화면
-      GoRoute(
-        path: AppRoutes.feedback,
-        name: 'feedback',
-        builder: (context, state) => const FeedbackPage(),
-      ),
+      // GoRoute(
+      //   path: AppRoutes.feedback,
+      //   name: 'feedback',
+      //   builder: (context, state) => const FeedbackPage(),
+      // ),
       
       // 연결 요청 화면
-      GoRoute(
-        path: AppRoutes.connectionRequest,
-        name: 'connectionRequest',
-        builder: (context, state) => const ConnectionRequestPage(),
-      ),
+      // GoRoute(
+      //   path: AppRoutes.connectionRequest,
+      //   name: 'connectionRequest',
+      //   builder: (context, state) => const ConnectionRequestPage(),
+      // ),
       
       // 에러 페이지
-      GoRoute(
-        path: AppRoutes.error,
-        name: 'error',
-        builder: (context, state) => const ErrorPage(),
-      ),
+      // GoRoute(
+      //   path: AppRoutes.error,
+      //   name: 'error',
+      //   builder: (context, state) => const ErrorPage(),
+      // ),
     ],
     
     // 에러 핸들링
-    errorBuilder: (context, state) => const ErrorPage(),
+    errorBuilder: (context, state) => Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            const SizedBox(height: 16),
+            Text(
+              '페이지를 찾을 수 없습니다',
+              style: HandamTypography.headline4,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '요청하신 페이지가 존재하지 않습니다.',
+              style: HandamTypography.body2.copyWith(
+                color: HandamColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 24),
+            HandamPrimaryButton(
+              onPressed: () => context.go(AppRoutes.home),
+              child: const Text('홈으로 돌아가기'),
+            ),
+          ],
+        ),
+      ),
+    ),
     
     // 리다이렉트 로직 (인증 상태에 따른 화면 분기)
     redirect: (context, state) {
@@ -184,72 +222,4 @@ GoRouter appRouter(AppRouterRef ref) {
       return null;
     },
   );
-}
-
-// 임시 페이지 클래스들 (실제 구현 시 features 폴더로 이동)
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('로그인')));
-}
-
-class ProfileSetupPage extends StatelessWidget {
-  const ProfileSetupPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('프로필 설정')));
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('홈')));
-}
-
-class ChatListPage extends StatelessWidget {
-  const ChatListPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('채팅 목록')));
-}
-
-class ChatRoomPage extends StatelessWidget {
-  final String chatRoomId;
-  const ChatRoomPage({super.key, required this.chatRoomId});
-  @override
-  Widget build(BuildContext context) => Scaffold(body: Center(child: Text('채팅방: $chatRoomId')));
-}
-
-class FriendsPage extends StatelessWidget {
-  const FriendsPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('친구 목록')));
-}
-
-class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('프로필')));
-}
-
-class SettingsPage extends StatelessWidget {
-  const SettingsPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('설정')));
-}
-
-class FeedbackPage extends StatelessWidget {
-  const FeedbackPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('피드백')));
-}
-
-class ConnectionRequestPage extends StatelessWidget {
-  const ConnectionRequestPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('연결 요청')));
-}
-
-class ErrorPage extends StatelessWidget {
-  const ErrorPage({super.key});
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Center(child: Text('에러 페이지')));
 } 

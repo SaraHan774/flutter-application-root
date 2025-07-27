@@ -1,4 +1,6 @@
 // Presentation Layer Export
+export 'pages/splash_page.dart';
+export 'pages/home_page.dart';
 export 'pages/onboarding/onboarding_page.dart';
 export 'pages/auth/phone_auth_page.dart';
 export 'pages/auth/otp_verification_page.dart';

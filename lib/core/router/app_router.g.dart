@@ -6,7 +6,7 @@ part of 'app_router.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appRouterHash() => r'03a78f56c76797f22e40bbb65b9010be60b192d8';
+String _$appRouterHash() => r'000d930deaadf5455b801ebf1e585baad6e85682';
 
 /// 앱의 라우터 설정
 ///
