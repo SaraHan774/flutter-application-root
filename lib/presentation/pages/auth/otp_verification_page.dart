@@ -45,15 +45,23 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
   }
 
   String _getOtpCode() {
-    return _controllers.map((controller) => controller.text).join();
+    final otpCode = _controllers.map((controller) => controller.text).join();
+    print('🔢 _getOtpCode called: "$otpCode" (length: ${otpCode.length})');
+    return otpCode;
   }
 
   void _onOtpChanged(String value, int index) {
+    print('🔢 OTP Changed: index=$index, value="$value"');
+    
     if (value.length == 1 && index < 5) {
       _focusNodes[index + 1].requestFocus();
     } else if (value.isEmpty && index > 0) {
       _focusNodes[index - 1].requestFocus();
     }
+    
+    // 전체 OTP 코드 상태 출력
+    final currentOtp = _getOtpCode();
+    print('🔢 Current OTP: "$currentOtp" (length: ${currentOtp.length})');
   }
 
   Future<void> _verifyOtp() async {
@@ -102,6 +110,11 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
+    final otpCode = _getOtpCode();
+    final isOtpComplete = otpCode.length == 6;
+
+    print('🔍 Build Debug: OTP length = ${otpCode.length}, isComplete = $isOtpComplete');
+    print('🔍 Auth State: $authState');
 
     return Scaffold(
       backgroundColor: HandamColors.background,
@@ -191,32 +204,66 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
               const SizedBox(height: 32),
 
               // 인증 확인 버튼
-              authState.when(
-                data: (_) => HandamPrimaryButton(
-                  onPressed: _getOtpCode().length == 6 ? () {
-                    print('🔘 Verify button pressed');
-                    _verifyOtp();
-                  } : null,
-                  child: const Text('인증 확인'),
-                ),
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                error: (error, stackTrace) => Column(
-                  children: [
-                    HandamPrimaryButton(
-                      onPressed: _verifyOtp,
-                      child: const Text('다시 시도'),
+              Builder(
+                builder: (context) {
+                  print('🔘 Building button widget - Auth state: $authState');
+                  
+                  if (authState.isLoading) {
+                    return Column(
+                      children: [
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          '인증 처리 중...',
+                          style: HandamTypography.body2.copyWith(
+                            color: HandamColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  
+                  if (authState.hasError) {
+                    return Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            print('🔘 Retry button pressed');
+                            _verifyOtp();
+                          },
+                          child: const Text('다시 시도'),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          '인증에 실패했습니다.',
+                          style: HandamTypography.body3.copyWith(
+                            color: HandamColors.errorLight,
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  
+                  // 기본 상태 (data 또는 null)
+                  print('🔘 Rendering default button - OTP Complete: $isOtpComplete');
+                  return ElevatedButton(
+                    onPressed: () {
+                      print('🔘 Verify button pressed - Always enabled');
+                      _verifyOtp();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isOtpComplete ? Colors.blue : Colors.grey,
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      '인증에 실패했습니다.',
-                      style: HandamTypography.body3.copyWith(
-                        color: HandamColors.errorLight,
+                    child: Text(
+                      isOtpComplete ? '인증 확인' : '인증번호 6자리 입력',
+                      style: TextStyle(
+                        color: isOtpComplete ? Colors.white : Colors.black54,
                       ),
                     ),
-                  ],
-                ),
+                  );
+                },
               ),
 
               const Spacer(),

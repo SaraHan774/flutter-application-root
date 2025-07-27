@@ -121,7 +121,7 @@ class AuthErrorDialog extends StatelessWidget {
         // 취소 버튼 (항상 표시)
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            // Navigator.pop()은 onDismiss 콜백에서 처리하므로 여기서는 호출하지 않음
             onDismiss?.call();
           },
           child: Text(
@@ -135,7 +135,7 @@ class AuthErrorDialog extends StatelessWidget {
         if (actionText != null)
           HandamPrimaryButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              // Navigator.pop()은 onActionPressed 콜백에서 처리하도록 함
               onActionPressed?.call();
             },
             child: Text(actionText!),
@@ -157,7 +157,11 @@ class AuthErrorDialogHelper {
       barrierDismissible: false,
       builder: (context) => AuthErrorDialog.networkError(
         onRetry: onRetry,
-        onDismiss: () => Navigator.of(context).pop(),
+        onDismiss: () {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }
@@ -172,7 +176,11 @@ class AuthErrorDialogHelper {
       barrierDismissible: false,
       builder: (context) => AuthErrorDialog.invalidCode(
         onRetry: onRetry,
-        onDismiss: () => Navigator.of(context).pop(),
+        onDismiss: () {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }
@@ -187,7 +195,11 @@ class AuthErrorDialogHelper {
       barrierDismissible: false,
       builder: (context) => AuthErrorDialog.sessionExpired(
         onRetry: onRetry,
-        onDismiss: () => Navigator.of(context).pop(),
+        onDismiss: () {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }
@@ -200,7 +212,11 @@ class AuthErrorDialogHelper {
       context: context,
       barrierDismissible: false,
       builder: (context) => AuthErrorDialog.quotaExceeded(
-        onDismiss: () => Navigator.of(context).pop(),
+        onDismiss: () {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }
@@ -217,7 +233,11 @@ class AuthErrorDialogHelper {
       builder: (context) => AuthErrorDialog.general(
         message: message,
         onRetry: onRetry,
-        onDismiss: () => Navigator.of(context).pop(),
+        onDismiss: () {
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }
@@ -257,7 +277,10 @@ class AuthErrorDialogHelper {
   /// 에러 다이얼로그에서 취소 시 상태 초기화를 위한 콜백
   static VoidCallback createDismissCallback(BuildContext context, VoidCallback? onStateReset) {
     return () {
-      Navigator.of(context).pop();
+      // context가 여전히 유효한지 확인
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
       onStateReset?.call();
     };
   }
