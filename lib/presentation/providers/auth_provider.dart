@@ -40,6 +40,11 @@ class AuthNotifier extends _$AuthNotifier {
   /// 저장된 verificationId 반환
   String? get verificationId => _verificationId;
 
+  /// 에러 상태 초기화
+  void resetError() {
+    state = const AsyncValue.data(null);
+  }
+
   /// 인증번호 확인 및 로그인
   Future<void> verifyPhoneCode({
     required String phoneNumber,

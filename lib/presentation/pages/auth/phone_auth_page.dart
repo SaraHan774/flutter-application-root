@@ -31,8 +31,12 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
 
     final phoneNumber = _phoneController.text.trim();
     
+    // 전화번호에서 숫자만 추출하고 국가 코드 추가
+    final digits = phoneNumber.replaceAll(RegExp(r'[^0-9]'), '');
+    final formattedPhoneNumber = '+82${digits.substring(1)}'; // 010 -> +8210
+    
     try {
-      final verificationId = await ref.read(authNotifierProvider.notifier).sendPhoneVerificationCode(phoneNumber);
+      final verificationId = await ref.read(authNotifierProvider.notifier).sendPhoneVerificationCode(formattedPhoneNumber);
       
       setState(() {
         _isCodeSent = true;
@@ -58,8 +62,17 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
         await AuthErrorDialogHelper.showErrorFromFailure(
           context,
           failure,
-          onRetry: _sendVerificationCode,
+          onRetry: () {
+            // 에러 상태 초기화 후 재시도
+            ref.read(authNotifierProvider.notifier).resetError();
+            _sendVerificationCode();
+          },
         );
+        
+        // 다이얼로그가 닫힌 후 상태 초기화
+        if (mounted) {
+          ref.read(authNotifierProvider.notifier).resetError();
+        }
       }
     }
   }
@@ -110,14 +123,51 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                   LengthLimitingTextInputFormatter(11),
+                  // 전화번호 자동 포맷팅
+                  TextInputFormatter.withFunction((oldValue, newValue) {
+                    final text = newValue.text;
+                    if (text.isEmpty) return newValue;
+                    
+                    // 숫자만 추출
+                    final digits = text.replaceAll(RegExp(r'[^0-9]'), '');
+                    
+                    // 포맷팅 적용
+                    String formatted = '';
+                    if (digits.length <= 3) {
+                      formatted = digits;
+                    } else if (digits.length <= 7) {
+                      formatted = '${digits.substring(0, 3)}-${digits.substring(3)}';
+                    } else {
+                      formatted = '${digits.substring(0, 3)}-${digits.substring(3, 7)}-${digits.substring(7)}';
+                    }
+                    
+                    return TextEditingValue(
+                      text: formatted,
+                      selection: TextSelection.collapsed(offset: formatted.length),
+                    );
+                  }),
                 ],
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '전화번호를 입력해주세요.';
                   }
-                  if (value.length < 10) {
-                    return '올바른 전화번호를 입력해주세요.';
+                  
+                  // 숫자만 추출
+                  final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
+                  
+                  if (digits.length < 10) {
+                    return '전화번호는 10자리 이상이어야 합니다.';
                   }
+                  
+                  if (digits.length > 11) {
+                    return '전화번호는 11자리를 초과할 수 없습니다.';
+                  }
+                  
+                  // 한국 휴대폰 번호 형식 검증 (010, 011, 016, 017, 018, 019)
+                  if (!digits.startsWith(RegExp(r'01[0-9]'))) {
+                    return '올바른 휴대폰 번호 형식이 아닙니다.';
+                  }
+                  
                   return null;
                 },
               ),
@@ -135,7 +185,11 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
                 error: (error, stackTrace) => Column(
                   children: [
                     HandamPrimaryButton(
-                      onPressed: _sendVerificationCode,
+                      onPressed: () {
+                        // 에러 상태 초기화 후 재시도
+                        ref.read(authNotifierProvider.notifier).resetError();
+                        _sendVerificationCode();
+                      },
                       child: const Text('다시 시도'),
                     ),
                     const SizedBox(height: 16),

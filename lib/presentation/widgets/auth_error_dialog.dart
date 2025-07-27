@@ -253,4 +253,12 @@ class AuthErrorDialogHelper {
       );
     }
   }
+
+  /// 에러 다이얼로그에서 취소 시 상태 초기화를 위한 콜백
+  static VoidCallback createDismissCallback(BuildContext context, VoidCallback? onStateReset) {
+    return () {
+      Navigator.of(context).pop();
+      onStateReset?.call();
+    };
+  }
 } 
