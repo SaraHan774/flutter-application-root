@@ -139,7 +139,7 @@
 ### 6.1 상태 관리
 - [x] `lib/presentation/providers/` 디렉토리 생성
   - [x] `auth_provider.dart` - 인증 상태 관리 (Riverpod 기반)
-  - [ ] `user_provider.dart` - 사용자 상태 관리
+  - [x] `user_provider.dart` - 사용자 상태 관리
 
 ### 6.2 온보딩 화면
 - [x] `lib/presentation/pages/onboarding/` 디렉토리 생성
@@ -150,7 +150,7 @@
 - [x] `lib/presentation/pages/auth/` 디렉토리 생성
   - [x] `phone_auth_page.dart` - 전화번호 입력 화면
   - [x] `otp_verification_page.dart` - 인증번호 확인 화면
-  - [ ] `auth_error_dialog.dart` - 인증 에러 다이얼로그
+  - [x] `auth_error_dialog.dart` - 인증 에러 다이얼로그
 
 ### 6.4 공통 위젯
 - [x] `lib/presentation/widgets/` 디렉토리 생성 (shared 디렉토리 활용)

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/core.dart';
 import '../../../shared/shared.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/auth_error_dialog.dart';
 
 /// 전화번호 인증 페이지
 class PhoneAuthPage extends ConsumerStatefulWidget {
@@ -48,28 +49,22 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
             backgroundColor: Colors.green,
           ),
         );
+        
+        // OTP 인증 페이지로 이동 (쿼리 파라미터 전달)
+        context.go(
+          '${AppRoutes.otpVerification}?phoneNumber=$phoneNumber&verificationId=$_verificationId',
+        );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: HandamColors.errorLight,
-          ),
+        // 에러를 Failure 객체로 변환하여 다이얼로그 표시
+        final failure = e is Failure ? e : UnknownFailure(e.toString());
+        await AuthErrorDialogHelper.showErrorFromFailure(
+          context,
+          failure,
+          onRetry: _sendVerificationCode,
         );
       }
-    }
-  }
-
-  void _onNextPressed() {
-    if (_isCodeSent) {
-      // OTP 확인 페이지로 이동
-      context.go(AppRoutes.otpVerification, extra: {
-        'phoneNumber': _phoneController.text.trim(),
-        'verificationId': _verificationId,
-      });
-    } else {
-      _sendVerificationCode();
     }
   }
 
@@ -78,107 +73,97 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
     final authState = ref.watch(authNotifierProvider);
 
     return Scaffold(
+      backgroundColor: HandamColors.background,
       appBar: AppBar(
-        title: Text('전화번호 인증'),
-        backgroundColor: Colors.transparent,
+        backgroundColor: HandamColors.background,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: HandamColors.textDefault),
+          onPressed: () => context.pop(),
+        ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 32),
-                
-                // 제목
-                Text(
-                  '전화번호를\n입력해주세요',
-                  style: HandamTypography.headline1,
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 제목
+              Text(
+                '전화번호로 로그인',
+                style: HandamTypography.headline1.copyWith(
+                  color: HandamColors.textDefault,
                 ),
-                
-                const SizedBox(height: 16),
-                
-                // 설명
-                Text(
-                  '안전한 인증을 위해 SMS로 인증번호를\n발송합니다',
-                  style: HandamTypography.body1.copyWith(
-                    color: HandamColors.textSecondaryLight,
-                  ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '안전한 대화를 위해 전화번호 인증이 필요합니다.',
+                style: HandamTypography.body2.copyWith(
+                  color: HandamColors.textSecondary,
                 ),
-                
-                const SizedBox(height: 48),
-                
-                // 전화번호 입력 필드
-                HandamTextField(
-                  controller: _phoneController,
-                  labelText: '전화번호',
-                  hintText: '010-1234-5678',
-                  keyboardType: TextInputType.phone,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(11),
+              ),
+              const SizedBox(height: 48),
+
+              // 전화번호 입력 필드
+              HandamTextField(
+                controller: _phoneController,
+                labelText: '전화번호',
+                hintText: '010-1234-5678',
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(11),
+                ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '전화번호를 입력해주세요.';
+                  }
+                  if (value.length < 10) {
+                    return '올바른 전화번호를 입력해주세요.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 32),
+
+              // 인증번호 전송 버튼
+              authState.when(
+                data: (_) => HandamPrimaryButton(
+                  onPressed: _isCodeSent ? null : _sendVerificationCode,
+                  text: _isCodeSent ? '인증번호 전송됨' : '인증번호 받기',
+                ),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                error: (error, stackTrace) => Column(
+                  children: [
+                    HandamPrimaryButton(
+                      onPressed: _sendVerificationCode,
+                      text: '다시 시도',
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '인증번호 전송에 실패했습니다.',
+                      style: HandamTypography.body3.copyWith(
+                        color: HandamColors.errorLight,
+                      ),
+                    ),
                   ],
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '전화번호를 입력해주세요';
-                    }
-                    if (value.length < 10) {
-                      return '올바른 전화번호를 입력해주세요';
-                    }
-                    return null;
-                  },
                 ),
-                
-                const SizedBox(height: 24),
-                
-                // 인증번호 전송 상태 표시
-                if (_isCodeSent)
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                                              border: Border.all(color: Colors.green),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.check_circle, color: Colors.green, size: 20),
-                        const SizedBox(width: 8),
-                        Text(
-                          '인증번호가 전송되었습니다',
-                          style: HandamTypography.body2.copyWith(
-                            color: Colors.green,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                
-                const Spacer(),
-                
-                // 다음 버튼
-                SizedBox(
-                  width: double.infinity,
-                  child: authState.when(
-                    loading: () => const HandamPrimaryButton(
-                      onPressed: null,
-                      text: '처리 중...',
-                    ),
-                    error: (error, stack) => HandamPrimaryButton(
-                      onPressed: _onNextPressed,
-                      text: _isCodeSent ? '다음' : '인증번호 받기',
-                    ),
-                    data: (user) => HandamPrimaryButton(
-                      onPressed: _onNextPressed,
-                      text: _isCodeSent ? '다음' : '인증번호 받기',
-                    ),
-                  ),
+              ),
+
+              const Spacer(),
+
+              // 하단 안내 텍스트
+              Text(
+                '인증번호는 SMS로 전송됩니다.',
+                style: HandamTypography.caption.copyWith(
+                  color: HandamColors.textSecondary,
                 ),
-              ],
-            ),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),

@@ -58,11 +58,19 @@ GoRouter appRouter(AppRouterRef ref) {
         builder: (context, state) => const PhoneAuthPage(),
       ),
       
-      // OTP 인증번호 확인 화면
+      // OTP 인증번호 확인 화면 (쿼리 파라미터 사용)
       GoRoute(
-        path: '/otp-verification',
+        path: AppRoutes.otpVerification,
         name: 'otpVerification',
-        builder: (context, state) => const OtpVerificationPage(),
+        builder: (context, state) {
+          final phoneNumber = state.uri.queryParameters['phoneNumber'] ?? '';
+          final verificationId = state.uri.queryParameters['verificationId'] ?? '';
+          
+          return OtpVerificationPage(
+            phoneNumber: phoneNumber,
+            verificationId: verificationId,
+          );
+        },
       ),
       
       // 프로필 설정 화면

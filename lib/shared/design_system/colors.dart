@@ -30,6 +30,17 @@ class HandamColors {
   static const Color outlineDark = Color(0xFF4A4846); // Dark Border
   static const Color emotionChipDark = Color(0xFF3A3836); // Dark Emotion Chip
 
+  // 현재 테마에 따른 색상 접근자 (기본값은 Light 테마)
+  static Color get primary => primaryLight;
+  static Color get secondary => secondaryLight;
+  static Color get accent => accentLight;
+  static Color get background => backgroundLight;
+  static Color get surface => surfaceLight;
+  static Color get textDefault => textDefaultLight;
+  static Color get textSecondary => textSecondaryLight;
+  static Color get error => errorLight;
+  static Color get outline => outlineLight;
+
   /// Light Theme ColorScheme
   static const ColorScheme lightColorScheme = ColorScheme(
     brightness: Brightness.light,

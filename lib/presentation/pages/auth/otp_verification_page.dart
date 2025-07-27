@@ -5,10 +5,18 @@ import 'package:go_router/go_router.dart';
 import '../../../core/core.dart';
 import '../../../shared/shared.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/auth_error_dialog.dart';
 
 /// OTP 인증번호 확인 페이지
 class OtpVerificationPage extends ConsumerStatefulWidget {
-  const OtpVerificationPage({super.key});
+  final String phoneNumber;
+  final String verificationId;
+
+  const OtpVerificationPage({
+    super.key,
+    required this.phoneNumber,
+    required this.verificationId,
+  });
 
   @override
   ConsumerState<OtpVerificationPage> createState() => _OtpVerificationPageState();
@@ -16,7 +24,7 @@ class OtpVerificationPage extends ConsumerStatefulWidget {
 
 class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
   final _formKey = GlobalKey<FormState>();
-  final List<TextEditingController> _otpControllers = List.generate(
+  final List<TextEditingController> _controllers = List.generate(
     6,
     (index) => TextEditingController(),
   );
@@ -25,40 +33,27 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
     (index) => FocusNode(),
   );
 
-  String _phoneNumber = '';
-  String _verificationId = '';
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-      if (args != null) {
-        _phoneNumber = args['phoneNumber'] ?? '';
-        _verificationId = args['verificationId'] ?? '';
-      }
-    });
-  }
-
   @override
   void dispose() {
-    for (var controller in _otpControllers) {
+    for (final controller in _controllers) {
       controller.dispose();
     }
-    for (var node in _focusNodes) {
-      node.dispose();
+    for (final focusNode in _focusNodes) {
+      focusNode.dispose();
     }
     super.dispose();
+  }
+
+  String _getOtpCode() {
+    return _controllers.map((controller) => controller.text).join();
   }
 
   void _onOtpChanged(String value, int index) {
     if (value.length == 1 && index < 5) {
       _focusNodes[index + 1].requestFocus();
+    } else if (value.isEmpty && index > 0) {
+      _focusNodes[index - 1].requestFocus();
     }
-  }
-
-  String _getOtpCode() {
-    return _otpControllers.map((controller) => controller.text).join();
   }
 
   Future<void> _verifyOtp() async {
@@ -68,9 +63,9 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
     
     try {
       await ref.read(authNotifierProvider.notifier).verifyPhoneCode(
-        phoneNumber: _phoneNumber,
+        phoneNumber: widget.phoneNumber,
         smsCode: otpCode,
-        verificationId: _verificationId,
+        verificationId: widget.verificationId,
       );
       
       if (mounted) {
@@ -79,11 +74,12 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: HandamColors.errorLight,
-          ),
+        // 에러를 Failure 객체로 변환하여 다이얼로그 표시
+        final failure = e is Failure ? e : UnknownFailure(e.toString());
+        await AuthErrorDialogHelper.showErrorFromFailure(
+          context,
+          failure,
+          onRetry: _verifyOtp,
         );
       }
     }
@@ -94,115 +90,132 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
     final authState = ref.watch(authNotifierProvider);
 
     return Scaffold(
+      backgroundColor: HandamColors.background,
       appBar: AppBar(
-        title: Text('인증번호 확인'),
-        backgroundColor: Colors.transparent,
+        backgroundColor: HandamColors.background,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: HandamColors.textDefault),
+          onPressed: () => context.pop(),
+        ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 32),
-                
-                // 제목
-                Text(
-                  '인증번호를\n입력해주세요',
-                  style: HandamTypography.headline1,
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 제목
+              Text(
+                '인증번호 입력',
+                style: HandamTypography.headline1.copyWith(
+                  color: HandamColors.textDefault,
                 ),
-                
-                const SizedBox(height: 16),
-                
-                // 설명
-                Text(
-                  '$_phoneNumber로 전송된\n6자리 인증번호를 입력해주세요',
-                  style: HandamTypography.body1.copyWith(
-                    color: HandamColors.textSecondaryLight,
-                  ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${widget.phoneNumber}로 전송된 6자리 인증번호를 입력해주세요.',
+                style: HandamTypography.body2.copyWith(
+                  color: HandamColors.textSecondary,
                 ),
-                
-                const SizedBox(height: 48),
-                
-                // OTP 입력 필드들
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(
-                    6,
-                    (index) => SizedBox(
-                      width: 45,
-                      child: TextFormField(
-                        controller: _otpControllers[index],
-                        focusNode: _focusNodes[index],
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(1),
-                        ],
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 8,
+              ),
+              const SizedBox(height: 48),
+
+              // OTP 입력 필드들
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(
+                  6,
+                  (index) => SizedBox(
+                    width: 45,
+                    child: TextFormField(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      style: HandamTypography.headline3.copyWith(
+                        color: HandamColors.textDefault,
+                      ),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: HandamColors.outline,
                           ),
                         ),
-                        onChanged: (value) => _onOtpChanged(value, index),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return '';
-                          }
-                          return null;
-                        },
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: HandamColors.primary,
+                            width: 2,
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 8,
+                        ),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(1),
+                      ],
+                      onChanged: (value) => _onOtpChanged(value, index),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              // 인증 확인 버튼
+              authState.when(
+                data: (_) => HandamPrimaryButton(
+                  onPressed: _getOtpCode().length == 6 ? _verifyOtp : null,
+                  text: '인증 확인',
+                ),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                error: (error, stackTrace) => Column(
+                  children: [
+                    HandamPrimaryButton(
+                      onPressed: _verifyOtp,
+                      text: '다시 시도',
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      '인증에 실패했습니다.',
+                      style: HandamTypography.body3.copyWith(
+                        color: HandamColors.errorLight,
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                
-                const SizedBox(height: 24),
-                
-                // 재전송 버튼
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      // TODO: 재전송 로직 구현
-                    },
-                    child: Text(
-                      '인증번호 재전송',
-                      style: HandamTypography.body2.copyWith(
-                        color: HandamColors.primaryLight,
-                      ),
-                    ),
-                  ),
-                ),
-                
-                const Spacer(),
-                
-                // 확인 버튼
-                SizedBox(
-                  width: double.infinity,
-                  child: authState.when(
-                    loading: () => const HandamPrimaryButton(
-                      onPressed: null,
-                      text: '확인 중...',
-                    ),
-                    error: (error, stack) => HandamPrimaryButton(
-                      onPressed: _verifyOtp,
-                      text: '확인',
-                    ),
-                    data: (user) => HandamPrimaryButton(
-                      onPressed: _verifyOtp,
-                      text: '확인',
+              ),
+
+              const Spacer(),
+
+              // 재전송 버튼
+              Center(
+                child: TextButton(
+                  onPressed: () {
+                    // TODO: 재전송 로직 구현
+                  },
+                  child: Text(
+                    '인증번호 재전송',
+                    style: HandamTypography.button.copyWith(
+                      color: HandamColors.primary,
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
