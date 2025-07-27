@@ -35,7 +35,6 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
       final verificationId = await ref.read(authNotifierProvider.notifier).sendPhoneVerificationCode(phoneNumber);
       
       setState(() {
-        _verificationId = verificationId;
         _isCodeSent = true;
       });
       
