@@ -6,43 +6,49 @@ part of 'service_locator.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$firebaseAuthHash() => r'7791bf70ce0f01bf991a53a76abc915478673c0b';
+String _$firebaseAuthProviderHash() =>
+    r'f4ad6fac2a9657135452f7999c3808446dbb1cf0';
 
 /// Firebase Auth 인스턴스 제공
 ///
-/// Copied from [firebaseAuth].
-@ProviderFor(firebaseAuth)
-final firebaseAuthProvider = AutoDisposeProvider<FirebaseAuth>.internal(
-  firebaseAuth,
-  name: r'firebaseAuthProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$firebaseAuthHash,
+/// Copied from [firebaseAuthProvider].
+@ProviderFor(firebaseAuthProvider)
+final firebaseAuthProviderProvider =
+    AutoDisposeProvider<firebase_auth.FirebaseAuth>.internal(
+  firebaseAuthProvider,
+  name: r'firebaseAuthProviderProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$firebaseAuthProviderHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef FirebaseAuthRef = AutoDisposeProviderRef<FirebaseAuth>;
-String _$firestoreHash() => r'ef4a6b0737caace50a6d79dd3e4e2aa1bc3031d5';
+typedef FirebaseAuthProviderRef
+    = AutoDisposeProviderRef<firebase_auth.FirebaseAuth>;
+String _$firestoreProviderHash() => r'22ce7f65aeed7dd86de25c1aebb3e206b491ceae';
 
 /// Firestore 인스턴스 제공
 ///
-/// Copied from [firestore].
-@ProviderFor(firestore)
-final firestoreProvider = AutoDisposeProvider<FirebaseFirestore>.internal(
-  firestore,
-  name: r'firestoreProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$firestoreHash,
+/// Copied from [firestoreProvider].
+@ProviderFor(firestoreProvider)
+final firestoreProviderProvider =
+    AutoDisposeProvider<FirebaseFirestore>.internal(
+  firestoreProvider,
+  name: r'firestoreProviderProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$firestoreProviderHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef FirestoreRef = AutoDisposeProviderRef<FirebaseFirestore>;
-String _$firebaseMessagingHash() => r'12efd3604ac737ea5a08cfad434a0002f21506c6';
+typedef FirestoreProviderRef = AutoDisposeProviderRef<FirebaseFirestore>;
+String _$firebaseMessagingHash() => r'6abf9bf6d98c4ba311760139587b2995df4c1508';
 
 /// Firebase Messaging 인스턴스 제공
 ///
@@ -62,25 +68,29 @@ final firebaseMessagingProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef FirebaseMessagingRef = AutoDisposeProviderRef<FirebaseMessaging>;
-String _$currentUserHash() => r'490ec2bae73aae8c157ef1428923ce98f4171a33';
+String _$currentUserProviderHash() =>
+    r'82c9434f577dbb82248765b4488d4a4df76dc993';
 
 /// 현재 사용자 상태 제공
 ///
-/// Copied from [currentUser].
-@ProviderFor(currentUser)
-final currentUserProvider = AutoDisposeStreamProvider<User?>.internal(
-  currentUser,
-  name: r'currentUserProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$currentUserHash,
+/// Copied from [currentUserProvider].
+@ProviderFor(currentUserProvider)
+final currentUserProviderProvider =
+    AutoDisposeStreamProvider<firebase_auth.User?>.internal(
+  currentUserProvider,
+  name: r'currentUserProviderProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentUserProviderHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef CurrentUserRef = AutoDisposeStreamProviderRef<User?>;
-String _$isAuthenticatedHash() => r'3857cfce210e13acc14038c48e9523e0324bd173';
+typedef CurrentUserProviderRef
+    = AutoDisposeStreamProviderRef<firebase_auth.User?>;
+String _$isAuthenticatedHash() => r'7081def002a28495d9c251a2d93c64c87d5ad072';
 
 /// 사용자 인증 상태 제공 (bool)
 ///
@@ -99,7 +109,7 @@ final isAuthenticatedProvider = AutoDisposeStreamProvider<bool>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef IsAuthenticatedRef = AutoDisposeStreamProviderRef<bool>;
-String _$currentUserIdHash() => r'405df50b36734799d40503b7607d589263bc7009';
+String _$currentUserIdHash() => r'9e4459ccdc1c4c31cace126c081d703123013ee0';
 
 /// 사용자 UID 제공
 ///
@@ -118,45 +128,45 @@ final currentUserIdProvider = AutoDisposeProvider<String?>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef CurrentUserIdRef = AutoDisposeProviderRef<String?>;
-String _$getMatchingRepositoryHash() =>
-    r'ff4fc4151dce6c6b52e224b0079fcecbe1920172';
+String _$matchingRepositoryHash() =>
+    r'9efaca4f3c8686ecd7f52ef4bbe9fd34084ebb2e';
 
 /// 매칭 Repository 제공
 ///
-/// Copied from [getMatchingRepository].
-@ProviderFor(getMatchingRepository)
-final getMatchingRepositoryProvider =
+/// Copied from [matchingRepository].
+@ProviderFor(matchingRepository)
+final matchingRepositoryProvider =
     AutoDisposeProvider<MatchingRepository>.internal(
-  getMatchingRepository,
-  name: r'getMatchingRepositoryProvider',
+  matchingRepository,
+  name: r'matchingRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$getMatchingRepositoryHash,
+      : _$matchingRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GetMatchingRepositoryRef = AutoDisposeProviderRef<MatchingRepository>;
-String _$getChatRepositoryHash() => r'de0f7634cb14f3ad2c00d331e043f0da47a84083';
+typedef MatchingRepositoryRef = AutoDisposeProviderRef<MatchingRepository>;
+String _$chatRepositoryHash() => r'3b05b2e86a376bda33d5f0aaa002537c2679aa84';
 
 /// 채팅 Repository 제공
 ///
-/// Copied from [getChatRepository].
-@ProviderFor(getChatRepository)
-final getChatRepositoryProvider = AutoDisposeProvider<ChatRepository>.internal(
-  getChatRepository,
-  name: r'getChatRepositoryProvider',
+/// Copied from [chatRepository].
+@ProviderFor(chatRepository)
+final chatRepositoryProvider = AutoDisposeProvider<ChatRepository>.internal(
+  chatRepository,
+  name: r'chatRepositoryProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$getChatRepositoryHash,
+      : _$chatRepositoryHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GetChatRepositoryRef = AutoDisposeProviderRef<ChatRepository>;
+typedef ChatRepositoryRef = AutoDisposeProviderRef<ChatRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

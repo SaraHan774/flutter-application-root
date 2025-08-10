@@ -146,19 +146,19 @@ class _HomePageState extends ConsumerState<HomePage> {
           Row(
             children: [
               Expanded(
-                child: HandamSecondaryButton(
+                child: HandamButton(
+                  text: '매칭 상태 확인',
                   onPressed: () {
                     // 매칭 상태 페이지로 이동
                     context.push('/matching-status');
                   },
-                  child: const Text('매칭 상태 확인'),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: HandamPrimaryButton(
+                child: HandamButton(
+                  text: '매칭 대기 중',
                   onPressed: null, // 매칭 완료 시에만 활성화
-                  child: const Text('매칭 대기 중'),
                 ),
               ),
             ],
@@ -278,11 +278,11 @@ class _HomePageState extends ConsumerState<HomePage> {
           
           const SizedBox(height: 12),
           
-          HandamSecondaryButton(
+          HandamButton(
+            text: '자세히 보기',
             onPressed: () {
               // TODO: 감정 일지 상세 화면으로 이동
             },
-            child: const Text('자세히 보기'),
           ),
         ],
       ),
@@ -333,11 +333,11 @@ class _HomePageState extends ConsumerState<HomePage> {
           
           const SizedBox(height: 12),
           
-          HandamSecondaryButton(
+          HandamButton(
+            text: '친구 목록 보기',
             onPressed: () {
               // TODO: 말벗 친구 목록 화면으로 이동
             },
-            child: const Text('친구 목록 보기'),
           ),
         ],
       ),

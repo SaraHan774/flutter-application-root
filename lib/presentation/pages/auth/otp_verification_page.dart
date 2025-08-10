@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/core.dart';
 import '../../../shared/shared.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/user_provider.dart';
 import '../../widgets/auth_error_dialog.dart';
 
 /// OTP 인증번호 확인 페이지
@@ -64,6 +65,42 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
     print('🔢 Current OTP: "$currentOtp" (length: ${currentOtp.length})');
   }
 
+  /// 랜덤 닉네임을 생성하고 서버에 저장한 후 다음 화면으로 이동
+  Future<void> _createRandomNicknameAndProceed(String userId) async {
+    try {
+      // 랜덤 닉네임 생성 (숫자 포함하여 중복 가능성 줄임)
+      final randomNickname = NicknameGenerator.generate(includeNumber: true);
+      
+      print('[한담] [OTP] Generated random nickname: $randomNickname');
+      
+      // 사용자 프로필에 랜덤 닉네임 저장
+      await ref.read(userNotifierProvider.notifier).updateUserProfile(
+        userId: userId,
+        nickname: randomNickname,
+      );
+      
+      print('[한담] [OTP] Random nickname saved successfully');
+      
+      // AuthProvider 상태 새로고침
+      await ref.read(authNotifierProvider.notifier).refreshCurrentUser();
+      
+      // 감정 선택 화면으로 직접 이동
+      if (mounted) {
+        print('[한담] [OTP] Navigating to emotion selection');
+        context.go(AppRoutes.emotionSelection);
+      }
+      
+    } catch (e) {
+      print('[한담] [OTP] Error creating random nickname: $e');
+      if (mounted) {
+        AuthErrorDialogHelper.showGeneralError(
+          context,
+          message: '닉네임 생성 중 오류가 발생했습니다. 다시 시도해주세요.',
+        );
+      }
+    }
+  }
+
   Future<void> _verifyOtp() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -91,21 +128,25 @@ class _OtpVerificationPageState extends ConsumerState<OtpVerificationPage> {
       if (mounted) {
         // 인증 성공 후 사용자 상태 확인
         final authState = ref.read(authNotifierProvider);
-        authState.whenData((user) {
+        authState.whenData((user) async {
           if (user != null) {
             if (user.isProfileComplete) {
               // 프로필 설정 완료: 홈 화면으로 이동
               print('[한담] [OTP] User profile complete, navigating to home');
               context.go(AppRoutes.home);
             } else {
-              // 프로필 설정 미완료: 닉네임 설정 화면으로 이동
-              print('[한담] [OTP] User profile incomplete, navigating to nickname setup');
-              context.go(AppRoutes.nicknameSetup);
+              // 프로필 설정 미완료: 자동으로 랜덤 닉네임 생성 및 저장
+              await _createRandomNicknameAndProceed(user.uid);
             }
           } else {
-            // 사용자 정보를 찾을 수 없음: 닉네임 설정 화면으로 이동
-            print('[한담] [OTP] No user data found, navigating to nickname setup');
-            context.go(AppRoutes.nicknameSetup);
+            // 사용자 정보를 찾을 수 없음: 에러 처리
+            print('[한담] [OTP] No user data found after verification');
+            if (mounted) {
+              AuthErrorDialogHelper.showGeneralError(
+                context,
+                message: '사용자 정보를 찾을 수 없습니다. 다시 시도해주세요.',
+              );
+            }
           }
         });
       }

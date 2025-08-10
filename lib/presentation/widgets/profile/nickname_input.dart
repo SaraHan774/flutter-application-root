@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handam/shared/design_system/colors.dart';
 import 'package:handam/shared/design_system/components/text_field.dart';
-import 'package:handam/shared/design_system/components/secondary_button.dart';
+import 'package:handam/shared/design_system/components/app_button.dart';
 
 /// 닉네임 입력 컴포넌트
 /// 재사용 가능한 닉네임 입력 필드와 관련 기능들을 제공
@@ -144,16 +144,18 @@ class _NicknameInputState extends State<NicknameInput> {
         if (widget.showRandomButton)
           Row(
             children: [
-              HandamSecondaryButton(
+              HandamButton(
+                text: '랜덤 닉네임 생성',
                 onPressed: _generateRandomNickname,
-                child: const Text('랜덤 닉네임 생성'),
+                variant: HandamButtonVariant.secondary,
               ),
               if (widget.showDuplicateCheck && _isValidFormat) ...[
                 const SizedBox(width: 12),
                 Expanded(
-                  child: HandamSecondaryButton(
+                  child: HandamButton(
+                    text: _isCheckingDuplicate ? '확인 중...' : '중복 확인',
                     onPressed: _isCheckingDuplicate ? null : _checkDuplicate,
-                    child: Text(_isCheckingDuplicate ? '확인 중...' : '중복 확인'),
+                    variant: HandamButtonVariant.secondary,
                   ),
                 ),
               ],

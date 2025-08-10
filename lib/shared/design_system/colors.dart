@@ -41,6 +41,7 @@ class HandamColors {
   static Color get error => errorLight;
   static Color get outline => outlineLight;
   static Color get onPrimary => Colors.white;
+  static Color get onSecondary => textDefaultLight;
 
   /// Light Theme ColorScheme
   static const ColorScheme lightColorScheme = ColorScheme(

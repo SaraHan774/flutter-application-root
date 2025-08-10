@@ -133,12 +133,12 @@ class AuthErrorDialog extends StatelessWidget {
         ),
         // 액션 버튼 (actionText가 있을 때만 표시)
         if (actionText != null)
-          HandamPrimaryButton(
+          HandamButton(
+            text: actionText!,
             onPressed: () {
               // Navigator.pop()은 onActionPressed 콜백에서 처리하도록 함
               onActionPressed?.call();
             },
-            child: Text(actionText!),
           ),
       ],
     );

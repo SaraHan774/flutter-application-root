@@ -1,4 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../core/core.dart';
 import '../../data/data.dart';
 import '../../domain/domain.dart';
@@ -123,9 +126,9 @@ class AuthNotifier extends _$AuthNotifier {
 
 /// 인증 Repository Provider
 @riverpod
-AuthRepository authRepository(AuthRepositoryRef ref) {
-  final firebaseAuth = ref.watch(firebaseAuthProvider);
-  final firestore = ref.watch(firestoreProvider);
+AuthRepository authRepository(Ref ref) {
+  final firebaseAuth = firebase_auth.FirebaseAuth.instance;
+  final firestore = FirebaseFirestore.instance;
   
   final authDataSource = FirebaseAuthDataSource(firebaseAuth);
   final userDataSource = FirestoreUserDataSource(firestore);
@@ -135,9 +138,11 @@ AuthRepository authRepository(AuthRepositoryRef ref) {
 
 /// 사용자 Repository Provider
 @riverpod
-UserRepository userRepository(UserRepositoryRef ref) {
-  final firestore = ref.watch(firestoreProvider);
+UserRepository userRepository(Ref ref) {
+  final firestore = FirebaseFirestore.instance;
   final userDataSource = FirestoreUserDataSource(firestore);
   
   return UserRepositoryImpl(userDataSource);
-} 
+}
+
+ 

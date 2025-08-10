@@ -14,4 +14,5 @@ export 'di/service_locator.dart';
 // 유틸리티
 export 'utils/constants.dart';
 export 'utils/validators.dart';
-export 'utils/logger.dart'; 
+export 'utils/logger.dart';
+export 'utils/nickname_generator.dart'; 

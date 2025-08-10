@@ -43,6 +43,7 @@ dependencies:
   # State Management
   riverpod: ^2.5.1
   flutter_riverpod: ^2.5.1
+  riverpod_annotation: ^2.3.5
 
   # Navigation
   go_router: ^14.6.2
@@ -55,6 +56,7 @@ dependencies:
   
   # Utilities
   equatable: ^2.0.5
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +71,6 @@ dev_dependencies:
   
   # Code Generation
   build_runner: ^2.4.11
-  riverpod_annotation: ^2.3.5
   riverpod_generator: ^2.3.5
 
 # For information on the generic Dart part of this file, see the

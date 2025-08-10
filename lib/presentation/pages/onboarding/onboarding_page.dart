@@ -128,11 +128,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   // 다음/시작하기 버튼
                   SizedBox(
                     width: double.infinity,
-                    child: HandamPrimaryButton(
-                      onPressed: _onNextPressed,
-                      child: Text(_currentPage == _slides.length - 1 
+                    child: HandamButton(
+                      text: _currentPage == _slides.length - 1 
                           ? '시작하기' 
-                          : '다음'),
+                          : '다음',
+                      onPressed: _onNextPressed,
                     ),
                   ),
                 ],

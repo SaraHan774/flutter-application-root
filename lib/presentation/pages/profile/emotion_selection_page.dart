@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:handam/shared/design_system/colors.dart';
 import 'package:handam/shared/design_system/typography.dart';
-import 'package:handam/shared/design_system/components/primary_button.dart';
+import 'package:handam/shared/design_system/components/app_button.dart';
 import 'package:handam/presentation/widgets/auth_error_dialog.dart';
 import 'package:handam/presentation/providers/auth_provider.dart';
 import 'package:handam/presentation/providers/user_provider.dart';
@@ -230,14 +230,9 @@ class _EmotionSelectionPageState extends ConsumerState<EmotionSelectionPage> {
               // 다음 버튼
               SizedBox(
                 width: double.infinity,
-                child: HandamPrimaryButton(
+                child: HandamButton(
+                  text: '다음',
                   onPressed: _selectedEmotions.length >= 3 ? _proceedToNext : null,
-                  child: Text(
-                    '다음',
-                    style: HandamTypography.button.copyWith(
-                      color: HandamColors.onPrimary,
-                    ),
-                  ),
                 ),
               ),
             ],

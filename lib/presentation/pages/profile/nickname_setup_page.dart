@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:handam/shared/design_system/colors.dart';
 import 'package:handam/shared/design_system/typography.dart';
-import 'package:handam/shared/design_system/components/primary_button.dart';
-import 'package:handam/shared/design_system/components/secondary_button.dart';
+import 'package:handam/shared/design_system/components/app_button.dart';
 import 'package:handam/shared/design_system/components/text_field.dart';
 
 import 'package:handam/presentation/widgets/auth_error_dialog.dart';
@@ -27,6 +26,7 @@ class _NicknameSetupPageState extends ConsumerState<NicknameSetupPage> {
   bool _isCheckingDuplicate = false;
   bool _isDuplicate = false;
   bool _isValidFormat = false;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -111,7 +111,7 @@ class _NicknameSetupPageState extends ConsumerState<NicknameSetupPage> {
   }
 
   /// 다음 단계로 이동
-  void _proceedToNext() async {
+  Future<void> _proceedToNext() async {
     if (!_formKey.currentState!.validate()) return;
     if (_isDuplicate) {
       AuthErrorDialogHelper.showGeneralError(
@@ -121,55 +121,55 @@ class _NicknameSetupPageState extends ConsumerState<NicknameSetupPage> {
       return;
     }
 
+    // 중복 실행 방지
+    if (_isSaving) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
     try {
       final nickname = _nicknameController.text.trim();
-      final authState = ref.watch(authNotifierProvider);
+      final user = ref.read(authNotifierProvider).value;
       
-      print('[한담] [DEBUG] AuthState: $authState');
-      print('[한담] [DEBUG] AuthState.value: ${authState.value}');
-      
-      return authState.when(
-        data: (user) async {
-          print('[한담] [DEBUG] User in when callback: $user');
-          if (user == null) {
-            throw Exception('사용자 ID를 찾을 수 없습니다.');
-          }
+      if (user == null) {
+        throw Exception('사용자 ID를 찾을 수 없습니다.');
+      }
 
-          // 사용자 프로필에 닉네임 저장
-          await ref.read(userNotifierProvider.notifier).updateUserProfile(
-            userId: user.uid,
-            nickname: nickname,
-          );
-          
-          print('[한담] [PROFILE] Nickname saved: $nickname');
-          
-          // AuthProvider 상태 새로고침
-          await ref.read(authNotifierProvider.notifier).refreshCurrentUser();
-          
-          // 다음 화면으로 이동
-          if (mounted) {
-            context.go('/emotion-selection');
-          }
-        },
-        loading: () {
-          throw Exception('사용자 정보를 불러오는 중입니다.');
-        },
-        error: (error, stackTrace) {
-          throw Exception('사용자 정보를 불러오는 중 오류가 발생했습니다: $error');
-        },
+      print('[한담] [DEBUG] User: $user');
+      print('[한담] [DEBUG] User ID: ${user.uid}');
+
+      // 사용자 프로필에 닉네임 저장
+      await ref.read(userNotifierProvider.notifier).updateUserProfile(
+        userId: user.uid,
+        nickname: nickname,
       );
+      
+      print('[한담] [PROFILE] Nickname saved: $nickname');
+      
+      // 다음 화면으로 이동
+      if (mounted) {
+        context.go('/emotion-selection');
+      }
       
     } catch (e) {
       print('[한담] [PROFILE] Error saving nickname: $e');
-      AuthErrorDialogHelper.showGeneralError(
-        context, 
-        message: '닉네임 저장 중 오류가 발생했습니다.',
-      );
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+        AuthErrorDialogHelper.showGeneralError(
+          context, 
+          message: '닉네임 저장 중 오류가 발생했습니다.',
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authNotifierProvider);
+    
     return Scaffold(
       backgroundColor: HandamColors.background,
       appBar: AppBar(
@@ -185,108 +185,130 @@ class _NicknameSetupPageState extends ConsumerState<NicknameSetupPage> {
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 안내 텍스트
-                Text(
-                  '사용할 닉네임을 입력해주세요',
-                  style: HandamTypography.headline2.copyWith(
-                    color: HandamColors.textDefault,
+        child: authState.when(
+          data: (user) => Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 안내 텍스트
+                  Text(
+                    '사용할 닉네임을 입력해주세요',
+                    style: HandamTypography.headline2.copyWith(
+                      color: HandamColors.textDefault,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '2-12자, 한글/영문/숫자만 사용 가능합니다',
-                  style: HandamTypography.body2.copyWith(
-                    color: HandamColors.textSecondary,
+                  const SizedBox(height: 8),
+                  Text(
+                    '2-12자, 한글/영문/숫자만 사용 가능합니다',
+                    style: HandamTypography.body2.copyWith(
+                      color: HandamColors.textSecondary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
-                // 닉네임 입력 필드
-                HandamTextField(
-                  controller: _nicknameController,
-                  labelText: '닉네임',
-                  hintText: '예: 따뜻한달빛',
-                  maxLength: 12,
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return '닉네임을 입력해주세요';
-                    }
-                    if (!_validateNicknameFormat(value.trim())) {
-                      return '2-12자의 한글/영문/숫자만 사용 가능합니다';
-                    }
-                    if (_isDuplicate) {
-                      return '이미 사용 중인 닉네임입니다';
-                    }
-                    return null;
-                  },
-                  suffixIcon: _isCheckingDuplicate
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : _isValidFormat
-                          ? Icon(
-                              _isDuplicate ? Icons.error : Icons.check_circle,
-                              color: _isDuplicate 
-                                  ? HandamColors.error 
-                                  : Colors.green,
-                            )
-                          : null,
-                ),
-                const SizedBox(height: 16),
+                  // 닉네임 입력 필드
+                  HandamTextField(
+                    controller: _nicknameController,
+                    labelText: '닉네임',
+                    hintText: '예: 따뜻한달빛',
+                    maxLength: 12,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return '닉네임을 입력해주세요';
+                      }
+                      if (!_validateNicknameFormat(value.trim())) {
+                        return '2-12자의 한글/영문/숫자만 사용 가능합니다';
+                      }
+                      if (_isDuplicate) {
+                        return '이미 사용 중인 닉네임입니다';
+                      }
+                      return null;
+                    },
+                    suffixIcon: _isCheckingDuplicate
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : _isValidFormat
+                            ? Icon(
+                                _isDuplicate ? Icons.error : Icons.check_circle,
+                                color: _isDuplicate 
+                                    ? HandamColors.error 
+                                    : Colors.green,
+                              )
+                            : null,
+                  ),
+                  const SizedBox(height: 16),
 
-                // 중복 확인 버튼
-                if (_isValidFormat && !_isDuplicate)
+                  // 중복 확인 버튼
+                  if (_isValidFormat && !_isDuplicate)
+                    SizedBox(
+                      width: double.infinity,
+                      child: HandamButton(
+                        text: _isCheckingDuplicate ? '확인 중...' : '중복 확인',
+                        onPressed: _isCheckingDuplicate ? null : _checkDuplicate,
+                        variant: HandamButtonVariant.secondary,
+                      ),
+                    ),
+                  const SizedBox(height: 16),
+
+                  // 랜덤 닉네임 생성 버튼
                   SizedBox(
                     width: double.infinity,
-                    child: HandamSecondaryButton(
-                      onPressed: _isCheckingDuplicate ? null : _checkDuplicate,
+                    child: TextButton(
+                      onPressed: _generateRandomNickname,
                       child: Text(
-                        _isCheckingDuplicate ? '확인 중...' : '중복 확인',
-                        style: HandamTypography.button.copyWith(
+                        '랜덤 닉네임 추천',
+                        style: HandamTypography.body1.copyWith(
                           color: HandamColors.primary,
+                          decoration: TextDecoration.underline,
                         ),
                       ),
                     ),
                   ),
-                const SizedBox(height: 16),
+                  const Spacer(),
 
-                // 랜덤 닉네임 생성 버튼
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: _generateRandomNickname,
-                    child: Text(
-                      '랜덤 닉네임 추천',
-                      style: HandamTypography.body1.copyWith(
-                        color: HandamColors.primary,
-                        decoration: TextDecoration.underline,
-                      ),
+                  // 다음 버튼
+                  SizedBox(
+                    width: double.infinity,
+                    child: HandamButton(
+                      text: _isSaving ? '저장 중...' : '다음',
+                      onPressed: (_isValidFormat && !_isDuplicate && !_isSaving) ? _proceedToNext : null,
                     ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
+          error: (error, stackTrace) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 48,
+                  color: HandamColors.error,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  '사용자 정보를 불러올 수 없습니다',
+                  style: HandamTypography.body1.copyWith(
+                    color: HandamColors.textDefault,
                   ),
                 ),
-                const Spacer(),
-
-                // 다음 버튼
-                SizedBox(
-                  width: double.infinity,
-                  child: HandamPrimaryButton(
-                    onPressed: _isValidFormat && !_isDuplicate ? _proceedToNext : null,
-                    child: Text(
-                      '다음',
-                      style: HandamTypography.button.copyWith(
-                        color: HandamColors.onPrimary,
-                      ),
-                    ),
-                  ),
+                const SizedBox(height: 16),
+                HandamButton(
+                  text: '다시 시도',
+                  onPressed: () {
+                    ref.read(authNotifierProvider.notifier).refreshCurrentUser();
+                  },
                 ),
               ],
             ),

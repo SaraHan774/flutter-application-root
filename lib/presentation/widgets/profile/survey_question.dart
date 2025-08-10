@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:handam/shared/design_system/colors.dart';
 import 'package:handam/shared/design_system/typography.dart';
-import 'package:handam/shared/design_system/components/primary_button.dart';
-import 'package:handam/shared/design_system/components/secondary_button.dart';
+import 'package:handam/shared/design_system/components/app_button.dart';
 
 /// 설문 질문 모델
 class SurveyQuestion {
@@ -127,9 +126,10 @@ class SurveyQuestionWidget extends StatelessWidget {
             // 이전 버튼
             if (onPrevious != null)
               Expanded(
-                child: HandamSecondaryButton(
+                child: HandamButton(
+                  text: '이전',
                   onPressed: onPrevious,
-                  child: const Text('이전'),
+                  variant: HandamButtonVariant.secondary,
                 ),
               ),
 
@@ -138,9 +138,10 @@ class SurveyQuestionWidget extends StatelessWidget {
             // 건너뛰기 버튼
             if (onSkip != null)
               Expanded(
-                child: HandamSecondaryButton(
+                child: HandamButton(
+                  text: '건너뛰기',
                   onPressed: onSkip,
-                  child: const Text('건너뛰기'),
+                  variant: HandamButtonVariant.secondary,
                 ),
               ),
 
@@ -149,9 +150,9 @@ class SurveyQuestionWidget extends StatelessWidget {
             // 다음/완료 버튼
             Expanded(
               flex: 2,
-              child: HandamPrimaryButton(
+              child: HandamButton(
+                text: isLastQuestion ? '완료' : '다음',
                 onPressed: currentAnswer != null ? onNext : null,
-                child: Text(isLastQuestion ? '완료' : '다음'),
               ),
             ),
           ],

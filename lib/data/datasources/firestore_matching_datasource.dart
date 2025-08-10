@@ -1,136 +1,253 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/matching_model.dart';
-import '../../domain/entities/matching_entity.dart';
 
-/// 매칭 Firestore 데이터소스
+import '../models/matching_model.dart';
+
+/// 매칭 관련 Firestore 데이터소스
+/// 
+/// 매칭 데이터의 CRUD 작업을 담당합니다.
 class FirestoreMatchingDataSource {
+  const FirestoreMatchingDataSource(this._firestore);
+
   final FirebaseFirestore _firestore;
 
-  FirestoreMatchingDataSource(this._firestore);
-
-  /// 컬렉션 참조
+  /// 매칭 컬렉션 참조
   CollectionReference<Map<String, dynamic>> get _matchingsCollection =>
       _firestore.collection('matchings');
 
-  /// 오늘의 매칭 조회
-  Future<MatchingEntity?> getTodayMatching(String uid) async {
+  /// 오늘의 매칭을 조회합니다.
+  /// 
+  /// [userId] 사용자 ID
+  /// 
+  /// Returns: 오늘의 매칭 정보 (없으면 null)
+  Future<MatchingModel?> getTodayMatching(String userId) async {
     try {
-      // TODO: 실제 Firestore 쿼리 구현 (현재는 임시로 null 반환)
-      // Firestore에 실제 데이터가 없으므로 null을 반환하여 "매칭 없음" 상태 표시
+      final today = DateTime.now();
+      final startOfDay = DateTime(today.year, today.month, today.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
+
+      final query = _matchingsCollection
+          .where('status', isEqualTo: 'active')
+          .where('createdAt', isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
+          .where('createdAt', isLessThan: Timestamp.fromDate(endOfDay))
+          .where(Filter.or(
+            Filter('userAId', isEqualTo: userId),
+            Filter('userBId', isEqualTo: userId),
+          ));
+
+      final snapshot = await query.get();
       
-      // 개발용: 테스트를 위해 가끔 매칭이 있다고 가정 (주석 처리)
-      // if (uid.endsWith('1')) {
-      //   return MatchingModel(
-      //     matchingId: 'test_matching_${DateTime.now().millisecondsSinceEpoch}',
-      //     userA: uid,
-      //     userB: 'test_user_b',
-      //     chatRoomId: 'test_chat_room_${DateTime.now().millisecondsSinceEpoch}',
-      //     createdAt: DateTime.now(),
-      //     status: 'active',
-      //   );
-      // }
+      if (snapshot.docs.isEmpty) return null;
       
-      // 즉시 null 반환 (로딩 상태 해제를 위해)
-      await Future.delayed(const Duration(milliseconds: 100)); // 최소 로딩 시간
-      return null;
+      // 가장 최근 매칭 반환
+      final doc = snapshot.docs.first;
+      return MatchingModel.fromFirestore(doc);
     } catch (e) {
-      throw Exception('Failed to get today matching: $e');
+      throw Exception('오늘의 매칭 조회 실패: $e');
     }
   }
 
-  /// 매칭 생성
-  Future<MatchingEntity> createMatching({
-    required String userA,
-    required String userB,
+  /// 새로운 매칭을 생성합니다.
+  /// 
+  /// [userAId] 첫 번째 사용자 ID
+  /// [userBId] 두 번째 사용자 ID
+  /// [chatRoomId] 채팅방 ID
+  /// 
+  /// Returns: 생성된 매칭 정보
+  Future<MatchingModel> createMatching({
+    required String userAId,
+    required String userBId,
     required String chatRoomId,
   }) async {
     try {
-      final docRef = _matchingsCollection.doc();
-      final matching = MatchingModel(
-        matchingId: docRef.id,
-        userA: userA,
-        userB: userB,
-        chatRoomId: chatRoomId,
-        createdAt: DateTime.now(),
-        status: 'active',
-      );
+      final now = DateTime.now();
+      final expiresAt = now.add(const Duration(hours: 24));
 
-      await docRef.set(matching.toJson());
-      return matching;
+      final matchingData = {
+        'userAId': userAId,
+        'userBId': userBId,
+        'chatRoomId': chatRoomId,
+        'createdAt': Timestamp.fromDate(now),
+        'expiresAt': Timestamp.fromDate(expiresAt),
+        'status': 'active',
+      };
+
+      final docRef = await _matchingsCollection.add(matchingData);
+      final doc = await docRef.get();
+      
+      return MatchingModel.fromFirestore(doc);
     } catch (e) {
-      throw Exception('Failed to create matching: $e');
+      throw Exception('매칭 생성 실패: $e');
     }
   }
 
-  /// 매칭 취소
-  Future<void> cancelMatching(String matchingId) async {
-    try {
-      await _matchingsCollection.doc(matchingId).update({
-        'status': 'cancelled',
-      });
-    } catch (e) {
-      throw Exception('Failed to cancel matching: $e');
-    }
-  }
-
-  /// 매칭 이력 조회
-  Future<List<MatchingEntity>> getMatchingHistory({
-    required String uid,
-    int limit = 20,
-    DateTime? beforeDate,
+  /// 매칭을 취소합니다.
+  /// 
+  /// [matchingId] 매칭 ID
+  /// [userId] 매칭을 취소하는 사용자 ID
+  /// 
+  /// Returns: 취소 성공 여부
+  Future<bool> cancelMatching({
+    required String matchingId,
+    required String userId,
   }) async {
     try {
-      Query<Map<String, dynamic>> query = _matchingsCollection
-          .where('userA', isEqualTo: uid)
-          .orderBy('createdAt', descending: true)
-          .limit(limit);
-
-      if (beforeDate != null) {
-        query = query.where('createdAt', isLessThan: beforeDate.toIso8601String());
-      }
-
-      final querySnapshot = await query.get();
-      final matchings = querySnapshot.docs
-          .map((doc) => MatchingModel.fromJson(doc.data(), doc.id))
-          .toList();
-
-      // userB로도 검색
-      Query<Map<String, dynamic>> query2 = _matchingsCollection
-          .where('userB', isEqualTo: uid)
-          .orderBy('createdAt', descending: true)
-          .limit(limit);
-
-      if (beforeDate != null) {
-        query2 = query2.where('createdAt', isLessThan: beforeDate.toIso8601String());
-      }
-
-      final querySnapshot2 = await query2.get();
-      final matchings2 = querySnapshot2.docs
-          .map((doc) => MatchingModel.fromJson(doc.data(), doc.id))
-          .toList();
-
-      // 두 결과를 합치고 중복 제거
-      final allMatchings = [...matchings, ...matchings2];
-      allMatchings.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      final docRef = _matchingsCollection.doc(matchingId);
+      final doc = await docRef.get();
       
-      return allMatchings.take(limit).toList();
+      if (!doc.exists) {
+        throw Exception('매칭을 찾을 수 없습니다.');
+      }
+
+      final data = doc.data()!;
+      final userAId = data['userAId'] as String;
+      final userBId = data['userBId'] as String;
+
+      // 매칭 참가자만 취소 가능
+      if (userId != userAId && userId != userBId) {
+        throw Exception('매칭을 취소할 권한이 없습니다.');
+      }
+
+      await docRef.update({
+        'status': 'cancelled',
+        'cancelledAt': Timestamp.fromDate(DateTime.now()),
+        'cancelledBy': userId,
+      });
+
+      return true;
     } catch (e) {
-      throw Exception('Failed to get matching history: $e');
+      throw Exception('매칭 취소 실패: $e');
     }
   }
 
-  /// 매칭 요청 (서버 트리거용)
+  /// 매칭 이력을 조회합니다.
+  /// 
+  /// [userId] 사용자 ID
+  /// [limit] 조회할 매칭 수
+  /// 
+  /// Returns: 매칭 이력 목록
+  Future<List<MatchingModel>> getMatchingHistory({
+    required String userId,
+    int limit = 20,
+  }) async {
+    try {
+      final query = _matchingsCollection
+          .where(Filter.or(
+            Filter('userAId', isEqualTo: userId),
+            Filter('userBId', isEqualTo: userId),
+          ))
+          .orderBy('createdAt', descending: true)
+          .limit(limit);
+
+      final snapshot = await query.get();
+      
+      return snapshot.docs
+          .map((doc) => MatchingModel.fromFirestore(doc))
+          .toList();
+    } catch (e) {
+      throw Exception('매칭 이력 조회 실패: $e');
+    }
+  }
+
+  /// 만료된 매칭들을 업데이트합니다.
+  /// 
+  /// Returns: 업데이트된 매칭 수
+  Future<int> updateExpiredMatchings() async {
+    try {
+      final now = DateTime.now();
+      
+      final query = _matchingsCollection
+          .where('status', isEqualTo: 'active')
+          .where('expiresAt', isLessThan: Timestamp.fromDate(now));
+
+      final snapshot = await query.get();
+      
+      final batch = _firestore.batch();
+      int updatedCount = 0;
+
+      for (final doc in snapshot.docs) {
+        batch.update(doc.reference, {
+          'status': 'expired',
+          'expiredAt': Timestamp.fromDate(now),
+        });
+        updatedCount++;
+      }
+
+      if (updatedCount > 0) {
+        await batch.commit();
+      }
+
+      return updatedCount;
+    } catch (e) {
+      throw Exception('만료된 매칭 업데이트 실패: $e');
+    }
+  }
+
+  /// 특정 사용자와의 매칭 이력이 있는지 확인합니다.
+  /// 
+  /// [userId] 현재 사용자 ID
+  /// [otherUserId] 상대 사용자 ID
+  /// [days] 확인할 일수 (기본값: 7일)
+  /// 
+  /// Returns: 매칭 이력 존재 여부
+  Future<bool> hasRecentMatching({
+    required String userId,
+    required String otherUserId,
+    int days = 7,
+  }) async {
+    try {
+      final cutoffDate = DateTime.now().subtract(Duration(days: days));
+
+      final query = _matchingsCollection
+          .where('createdAt', isGreaterThan: Timestamp.fromDate(cutoffDate))
+          .where(Filter.or(
+            Filter.and(
+                          Filter('userAId', isEqualTo: userId),
+            Filter('userBId', isEqualTo: otherUserId),
+          ),
+          Filter.and(
+            Filter('userAId', isEqualTo: otherUserId),
+            Filter('userBId', isEqualTo: userId),
+            ),
+          ));
+
+      final snapshot = await query.get();
+      return snapshot.docs.isNotEmpty;
+    } catch (e) {
+      throw Exception('최근 매칭 이력 확인 실패: $e');
+    }
+  }
+
+  /// 매칭 요청을 처리합니다.
+  /// 
+  /// [uid] 사용자 ID
   Future<void> requestMatching(String uid) async {
     try {
-      // 매칭 요청을 위한 임시 문서 생성
-      // 실제 매칭 로직은 Cloud Functions에서 처리
-      await _firestore.collection('matchingRequests').add({
-        'userId': uid,
-        'requestedAt': DateTime.now().toIso8601String(),
-        'status': 'pending',
-      });
+      // TODO: 매칭 요청 로직 구현
+      // 현재는 단순히 로그만 출력
+      print('매칭 요청: $uid');
     } catch (e) {
-      throw Exception('Failed to request matching: $e');
+      throw Exception('매칭 요청 실패: $e');
+    }
+  }
+
+  /// 사용자의 매칭 상태를 확인합니다.
+  /// 
+  /// [userId] 사용자 ID
+  /// 
+  /// Returns: 매칭된 상태 여부
+  Future<bool> isMatched(String userId) async {
+    try {
+      final query = _matchingsCollection
+          .where('status', isEqualTo: 'active')
+          .where(Filter.or(
+            Filter('userAId', isEqualTo: userId),
+            Filter('userBId', isEqualTo: userId),
+          ));
+
+      final snapshot = await query.get();
+      return snapshot.docs.isNotEmpty;
+    } catch (e) {
+      throw Exception('매칭 상태 확인 실패: $e');
     }
   }
 } 

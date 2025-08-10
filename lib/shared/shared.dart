@@ -5,8 +5,7 @@
 export 'design_system/colors.dart';
 export 'design_system/typography.dart';
 export 'design_system/app_theme.dart';
-export 'design_system/components/primary_button.dart';
-export 'design_system/components/secondary_button.dart';
+export 'design_system/components/app_button.dart';
 export 'design_system/components/text_field.dart';
 export 'design_system/components/emotion_chip.dart';
 

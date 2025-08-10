@@ -175,22 +175,22 @@ class _PhoneAuthPageState extends ConsumerState<PhoneAuthPage> {
 
               // 인증번호 전송 버튼
               authState.when(
-                data: (_) => HandamPrimaryButton(
+                data: (_) => HandamButton(
+                  text: _isCodeSent ? '인증번호 전송됨' : '인증번호 받기',
                   onPressed: _isCodeSent ? null : _sendVerificationCode,
-                  child: _isCodeSent ? const Text('인증번호 전송됨') : const Text('인증번호 받기'),
                 ),
                 loading: () => const Center(
                   child: CircularProgressIndicator(),
                 ),
                 error: (error, stackTrace) => Column(
                   children: [
-                    HandamPrimaryButton(
+                    HandamButton(
+                      text: '다시 시도',
                       onPressed: () {
                         // 에러 상태 초기화 후 재시도
                         ref.read(authNotifierProvider.notifier).resetError();
                         _sendVerificationCode();
                       },
-                      child: const Text('다시 시도'),
                     ),
                     const SizedBox(height: 16),
                     Text(

@@ -1,24 +1,80 @@
-import '../../domain/repositories/matching_repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../domain/entities/matching_entity.dart';
+import '../../domain/repositories/matching_repository.dart';
 import '../datasources/firestore_matching_datasource.dart';
-import '../../core/error/error_handler.dart';
+
+part 'matching_repository_impl.g.dart';
 
 /// 매칭 Repository 구현체
+/// 
+/// 매칭 관련 비즈니스 로직을 처리합니다.
 class MatchingRepositoryImpl implements MatchingRepository {
+  const MatchingRepositoryImpl(this._matchingDataSource);
+
   final FirestoreMatchingDataSource _matchingDataSource;
 
-  MatchingRepositoryImpl(this._matchingDataSource);
+  @override
+  Future<MatchingEntity?> getTodayMatching(String userId) async {
+    try {
+      final matching = await _matchingDataSource.getTodayMatching(userId);
+      return matching?.toEntity();
+    } catch (e) {
+      throw Exception('오늘의 매칭 조회 실패: $e');
+    }
+  }
 
   @override
-  Future<MatchingEntity?> getTodayMatching(String uid) async {
+  Future<MatchingEntity> createMatching({
+    required String userAId,
+    required String userBId,
+  }) async {
     try {
-      return await _matchingDataSource.getTodayMatching(uid);
+      // 채팅방 ID 생성 (매칭 ID와 동일하게 사용)
+      final chatRoomId = 'chat_${DateTime.now().millisecondsSinceEpoch}';
+      
+      final matching = await _matchingDataSource.createMatching(
+        userAId: userAId,
+        userBId: userBId,
+        chatRoomId: chatRoomId,
+      );
+      
+      return matching.toEntity();
     } catch (e) {
-      if (e is Exception) {
-        throw ErrorHandler.handleGenericError(e);
-      } else {
-        throw ErrorHandler.handleNetworkError(e);
-      }
+      throw Exception('매칭 생성 실패: $e');
+    }
+  }
+
+  @override
+  Future<bool> cancelMatching({
+    required String matchingId,
+    required String userId,
+  }) async {
+    try {
+      return await _matchingDataSource.cancelMatching(
+        matchingId: matchingId,
+        userId: userId,
+      );
+    } catch (e) {
+      throw Exception('매칭 취소 실패: $e');
+    }
+  }
+
+  @override
+  Future<List<MatchingEntity>> getMatchingHistory({
+    required String userId,
+    int limit = 20,
+  }) async {
+    try {
+      final matchings = await _matchingDataSource.getMatchingHistory(
+        userId: userId,
+        limit: limit,
+      );
+      
+      return matchings.map((matching) => matching.toEntity()).toList();
+    } catch (e) {
+      throw Exception('매칭 이력 조회 실패: $e');
     }
   }
 
@@ -27,66 +83,56 @@ class MatchingRepositoryImpl implements MatchingRepository {
     try {
       await _matchingDataSource.requestMatching(uid);
     } catch (e) {
-      if (e is Exception) {
-        throw ErrorHandler.handleGenericError(e);
-      } else {
-        throw ErrorHandler.handleNetworkError(e);
-      }
+      throw Exception('매칭 요청 실패: $e');
     }
   }
 
   @override
-  Future<MatchingEntity> createMatching({
-    required String userA,
-    required String userB,
-    required String chatRoomId,
+  Future<bool> isMatched(String userId) async {
+    try {
+      return await _matchingDataSource.isMatched(userId);
+    } catch (e) {
+      throw Exception('매칭 상태 확인 실패: $e');
+    }
+  }
+
+  @override
+  Future<bool> hasRecentMatching({
+    required String userId,
+    required String otherUserId,
+    int days = 7,
   }) async {
     try {
-      return await _matchingDataSource.createMatching(
-        userA: userA,
-        userB: userB,
-        chatRoomId: chatRoomId,
+      return await _matchingDataSource.hasRecentMatching(
+        userId: userId,
+        otherUserId: otherUserId,
+        days: days,
       );
     } catch (e) {
-      if (e is Exception) {
-        throw ErrorHandler.handleGenericError(e);
-      } else {
-        throw ErrorHandler.handleNetworkError(e);
-      }
+      throw Exception('최근 매칭 이력 확인 실패: $e');
     }
   }
 
   @override
-  Future<void> cancelMatching(String matchingId) async {
+  Future<int> updateExpiredMatchings() async {
     try {
-      await _matchingDataSource.cancelMatching(matchingId);
+      return await _matchingDataSource.updateExpiredMatchings();
     } catch (e) {
-      if (e is Exception) {
-        throw ErrorHandler.handleGenericError(e);
-      } else {
-        throw ErrorHandler.handleNetworkError(e);
-      }
+      throw Exception('만료된 매칭 업데이트 실패: $e');
     }
   }
+}
 
-  @override
-  Future<List<MatchingEntity>> getMatchingHistory({
-    required String uid,
-    int limit = 20,
-    DateTime? beforeDate,
-  }) async {
-    try {
-      return await _matchingDataSource.getMatchingHistory(
-        uid: uid,
-        limit: limit,
-        beforeDate: beforeDate,
-      );
-    } catch (e) {
-      if (e is Exception) {
-        throw ErrorHandler.handleGenericError(e);
-      } else {
-        throw ErrorHandler.handleNetworkError(e);
-      }
-    }
-  }
+/// MatchingRepositoryImpl Provider
+@riverpod
+MatchingRepositoryImpl matchingRepositoryImpl(MatchingRepositoryImplRef ref) {
+  final firestore = FirebaseFirestore.instance;
+  final matchingDataSource = FirestoreMatchingDataSource(firestore);
+  return MatchingRepositoryImpl(matchingDataSource);
+}
+
+/// MatchingRepository Provider
+@riverpod
+MatchingRepository matchingRepository(MatchingRepositoryRef ref) {
+  return ref.watch(matchingRepositoryImplProvider);
 } 

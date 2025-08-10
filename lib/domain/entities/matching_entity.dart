@@ -4,16 +4,19 @@ import 'package:equatable/equatable.dart';
 /// Firestore: matchings/{matchingId}
 class MatchingEntity extends Equatable {
   /// 매칭 고유 ID
-  final String matchingId;
+  final String id;
 
   /// 사용자 A UID
-  final String userA;
+  final String userAId;
 
   /// 사용자 B UID
-  final String userB;
+  final String userBId;
 
   /// 채팅방 ID
   final String chatRoomId;
+
+  /// 만료 시각
+  final DateTime expiresAt;
 
   /// 매칭 생성 시각
   final DateTime createdAt;
@@ -22,20 +25,22 @@ class MatchingEntity extends Equatable {
   final String status;
 
   const MatchingEntity({
-    required this.matchingId,
-    required this.userA,
-    required this.userB,
+    required this.id,
+    required this.userAId,
+    required this.userBId,
     required this.chatRoomId,
+    required this.expiresAt,
     required this.createdAt,
     required this.status,
   });
 
   factory MatchingEntity.fromMap(Map<String, dynamic> map, String matchingId) {
     return MatchingEntity(
-      matchingId: matchingId,
-      userA: map['userA'] ?? '',
-      userB: map['userB'] ?? '',
+      id: matchingId,
+      userAId: map['userAId'] ?? '',
+      userBId: map['userBId'] ?? '',
       chatRoomId: map['chatRoomId'] ?? '',
+      expiresAt: DateTime.parse(map['expiresAt']),
       createdAt: DateTime.parse(map['createdAt']),
       status: map['status'] ?? 'active',
     );
@@ -43,14 +48,15 @@ class MatchingEntity extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      'userA': userA,
-      'userB': userB,
+      'userAId': userAId,
+      'userBId': userBId,
       'chatRoomId': chatRoomId,
+      'expiresAt': expiresAt.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'status': status,
     };
   }
 
   @override
-  List<Object?> get props => [matchingId, userA, userB, chatRoomId, createdAt, status];
+  List<Object?> get props => [id, userAId, userBId, chatRoomId, expiresAt, createdAt, status];
 } 

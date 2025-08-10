@@ -140,9 +140,10 @@ GoRouter appRouter(AppRouterRef ref) {
         path: '${AppRoutes.matchingResult}/:matchingId',
         name: 'matchingResult',
         builder: (context, state) {
+          final matchingId = state.pathParameters['matchingId']!;
           // TODO: 매칭 ID로 매칭 정보를 조회하여 MatchingResultPage에 전달
           // 현재는 임시로 null을 전달 (실제 구현 시 매칭 정보 조회 로직 추가)
-          return const MatchingResultPage(matching: null);
+          return MatchingResultPage(matchingId: matchingId, matching: null);
         },
       ),
       
@@ -227,9 +228,9 @@ GoRouter appRouter(AppRouterRef ref) {
               ),
             ),
             const SizedBox(height: 24),
-            HandamPrimaryButton(
+            HandamButton(
+              text: '홈으로 돌아가기',
               onPressed: () => context.go(AppRoutes.home),
-              child: const Text('홈으로 돌아가기'),
             ),
           ],
         ),

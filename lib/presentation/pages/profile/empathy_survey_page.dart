@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:handam/shared/design_system/colors.dart';
 import 'package:handam/shared/design_system/typography.dart';
-import 'package:handam/shared/design_system/components/primary_button.dart';
-import 'package:handam/shared/design_system/components/secondary_button.dart';
+import 'package:handam/shared/design_system/components/app_button.dart';
 import 'package:handam/presentation/widgets/auth_error_dialog.dart';
 import 'package:handam/presentation/providers/auth_provider.dart';
 import 'package:handam/presentation/providers/user_provider.dart';
@@ -320,28 +319,19 @@ class _EmpathySurveyPageState extends ConsumerState<EmpathySurveyPage> {
                   // 이전 버튼
                   if (_currentQuestionIndex > 0)
                     Expanded(
-                      child: HandamSecondaryButton(
+                      child: HandamButton(
+                        text: '이전',
                         onPressed: _previousQuestion,
-                        child: Text(
-                          '이전',
-                          style: HandamTypography.button.copyWith(
-                            color: HandamColors.primary,
-                          ),
-                        ),
+                        variant: HandamButtonVariant.secondary,
                       ),
                     ),
                   if (_currentQuestionIndex > 0) const SizedBox(width: 16),
 
                   // 다음/완료 버튼
                   Expanded(
-                    child: HandamPrimaryButton(
+                    child: HandamButton(
+                      text: isLastQuestion ? '완료' : '다음',
                       onPressed: currentAnswer != null ? _nextQuestion : null,
-                      child: Text(
-                        isLastQuestion ? '완료' : '다음',
-                        style: HandamTypography.button.copyWith(
-                          color: HandamColors.onPrimary,
-                        ),
-                      ),
                     ),
                   ),
                 ],
